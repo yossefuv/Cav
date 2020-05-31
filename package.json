@@ -5,19 +5,11 @@
   "main": "app.js",
   "scripts": {
     "start": "node .",
-<<<<<<< HEAD
     "test": "eslint",
-=======
-    "test": "eslint .",
->>>>>>> 6fd2986fb6daa642ae4e44b8274a5534226d58d1
     "lint": "eslint --fix .",
     "prod": "SET NODE_ENV=production&&npm start",
     "dev": "SET NODE_ENV=development&&nodemon"
   },
-<<<<<<< HEAD
-
-=======
->>>>>>> 6fd2986fb6daa642ae4e44b8274a5534226d58d1
   "author": "xYossaf <yossef01102015@gmail.conm>",
   "license": "MIT",
   "dependencies": {
@@ -31,7 +23,6 @@
     "moment-duration-format": "^2.2.2",
     "moment-timezone": "^0.5.21"
   },
-<<<<<<< HEAD
     "devDependencies": {
     "eslint": "^6.8.0",
     "eslint-config-airbnb-base": "^14.1.0",
@@ -41,9 +32,5 @@
     "eslint-plugin-node": "^11.1.0",
     "eslint-plugin-prettier": "^3.1.3",
     "prettier": "^2.0.5"
-=======
-  "devDependencies": {
-    "eslint": "^5.6.1"
->>>>>>> 6fd2986fb6daa642ae4e44b8274a5534226d58d1
   }
 }

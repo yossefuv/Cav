@@ -63,9 +63,6 @@ typings/
 # Other
 data/
 package-lock.json
-<<<<<<< HEAD
 yarn.lock
-=======
->>>>>>> 6fd2986fb6daa642ae4e44b8274a5534226d58d1
 nodemon.json
 commands/beta.js

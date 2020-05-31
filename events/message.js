@@ -1,40 +1,58 @@
 const { prefix } = require('../config');
-const { MessageEmbed } = require('discord.js');
 
+let settings;
 module.exports = async (client, message) => {
+	if (!message.guild || message.author.bot) return;
+	settings = client.db.get(message.guild.id);
 
-    if (!message.guild) return;
+	const prefixMention = new RegExp(`^<@!?${client.user.id}> `);
+	const newPrefix = message.content.match(prefixMention) ? message.content.match(prefixMention)[0] : prefix;
 
-    const prefixMention = new RegExp(`^<@!?${client.user.id}> `);
-    const newPrefix = message.content.match(prefixMention) ? message.content.match(prefixMention)[0] : prefix;
-    LogMsg(client,message,prefix);
-    const getPrefix = new RegExp(`^<@!?${client.user.id}>( |)$`);
-    if (message.content.match(getPrefix)) return message.channel.send(`My prefix in this guild is \`${prefix}\``);
+	await LogMsg(client, message);
 
-    if (message.author.bot) return;
-    if (message.content.indexOf(newPrefix) !== 0) return;
+	const getPrefix = new RegExp(`^<@!?${client.user.id}>( |)$`);
+	if (message.content.match(getPrefix)) return message.channel.send(`My prefix in this guild is \`${prefix}\``);
 
-    const args = message.content.slice(newPrefix.length).trim().split(/ +/g);
-    const command = args.shift().toLowerCase();
+	if (message.content.indexOf(newPrefix) !== 0) return;
 
-    const cmd = client.commands.get(command) || client.commands.get(client.aliases.get(command));
-    if (!cmd) return;
+	const args = message.content.slice(newPrefix.length).trim().split(/ +/g);
+	const command = args.shift().toLowerCase();
 
-    cmd.run(client, message, args);
+	const cmd = client.commands.get(command) || client.commands.get(client.aliases.get(command));
+
+	if (!cmd) return;
+
+	cmd.run(client, message, args);
 };
 
+async function LogMsg(client, message) {
+	// eslint-disable-next-line prefer-const
+	if (settings.enabled) {
+		if (!settings.messages) settings.messages = { usedWords: {}, count: 0 };
 
-function LogMsg(client,message,prefix) {
-    var settings = client.db.get(message.guild.id);
-    if(settings.enabled && settings.loggedChannels.includes(message.channel.id) && message.author !== client.user) {
-       let Cmd =  message.content.slice(prefix.length).trim().split(/ +/g).shift().toLowerCase();
-       let vaildCmd = client.commands.get(Cmd) || client.commands.get(client.aliases.get(Cmd));
-       if(vaildCmd && message.member.permissions.has("ADMINISTRATOR")) return;
-    if(!settings.channelToLog) return;
-    var channel = message.guild.channels.cache.get(settings.channelToLog);
-    channel.send(`${message.channel} ${message.author} ${message.content}`);
+		let { usedWords, count } = settings.messages;
 
+		if (!usedWords) usedWords = {};
+		if (!count) count = 0;
+		if (!message.content.startsWith(prefix)) {
+			const msgArr = message.content.split(' ');
+
+			await msgArr.map(w => {
+				usedWords[w] ? (usedWords[w] += 1) : (usedWords[w] = 1);
+			});
+			client.db.set(message.guild.id, usedWords, 'messages.usedWords');
+			client.db.set(message.guild.id, (count += 1), 'messages.count');
+		}
+
+		if (settings.loggedChannels.includes(message.channel.id)) {
+			const Cmd = message.content.slice(prefix.length).trim().split(/ +/g).shift().toLowerCase();
+			const vaildCmd = client.commands.get(Cmd) || client.commands.get(client.aliases.get(Cmd));
+			if (vaildCmd && message.member.permissions.has('ADMINISTRATOR')) return;
+			if (!settings.channelToLog) return;
+			const channel = message.guild.channels.cache.get(settings.channelToLog);
+			channel.send(`${message.channel} ${message.author} ${message.content}`);
+		}
+	}
 }
-}
 
-// [Link](https://discordapp.com/channels/${message.guild.id}/${message.channel.id}/${message.id}) 
+// [Link](https://discordapp.com/channels/${message.guild.id}/${message.channel.id}/${message.id})

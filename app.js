@@ -1,4 +1,3 @@
-/* eslint-disable import/no-dynamic-require */
 if (Number(process.version.slice(1).split('.')[0]) < 8) throw new Error('Node 8.0.0 or higher is required. Update Node on your system.');
 
 const { Client } = require('discord.js');
@@ -35,6 +34,7 @@ const init = async () => {
 	evtFiles.forEach(f => {
 		const evtName = f.split('.')[0];
 		client.logger.log(`Loading Event: ${evtName} 👌`);
+
 		// eslint-disable-next-line global-require
 		const event = require(`./events/${f}`);
 		client.on(evtName, event.bind(null, client));

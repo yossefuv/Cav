@@ -1,5 +1,5 @@
 const { MessageEmbed } = require('discord.js');
-const { owner, prefix, embedColor, discord } = require('../config');
+const { owner, prefix, embedColor } = require('../config');
 const { noBotPerms } = require('../utils/errors');
 
 exports.run = async (client, message, args) => {
@@ -38,7 +38,7 @@ exports.run = async (client, message, args) => {
         .setDescription(`View help information for ${client.user}. \n (Do \`${prefix + cmdName} <command>\` for specific help information).`)
         .addField('Current Prefix', prefix)
         .addField('Bot Commands', helpCmds.join(' | '))
-        .addField('Found an issue?', `Please report any issues to <@${owner}> via the Support Discord: ${discord}.`)
+        .addField('Found an issue?', `Please report any issues to <@${owner}>`)
         .setColor(embedColor);
 
     message.channel.send(helpEmbed);

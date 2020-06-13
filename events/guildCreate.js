@@ -7,7 +7,7 @@ var settings =  {
 
 module.exports = async (client, guild) => {
 
-   if(!client.db.has) {
+   if(!client.db.has(guild.id)) {
     client.db.set(guild.id,settings);
    }
 

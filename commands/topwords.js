@@ -8,11 +8,12 @@ exports.run = async (client, message, args) => {
 	usedWordsSort.sort(function (a, b) {
 		return b[1] - a[1];
 	});
-
+   var number = usedWordsSort.length >= 20 ? 20 : usedWordsSort.length;
+   
 	message.channel.send(
 		new MessageEmbed()
-			.setAuthor(`Showing the top 20 words used in ${message.guild.name}`, message.guild.iconURL())
-			.setDescription(usedWordsSort.slice(0, 20).map(w => `${s} **${w[0]}**: \`${w[1]} times\``))
+			.setAuthor(`Showing the top ${number} words used in ${message.guild.name}`, message.guild.iconURL())
+			.setDescription(usedWordsSort.slice(0, number).map(w => `${s} **${w[0]}**: \`${w[1]} times\``))
 	);
 };
 

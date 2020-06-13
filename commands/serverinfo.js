@@ -23,9 +23,9 @@ exports.run = async (client, message, args) => {
 					`${s} Recorded messages: \`${count}\``,
 					'',
 					`**Top words used** ${s}`,
-					`${s} **${usedWordsSort[0][0]}**: \`${usedWordsSort[0][1]} times\``,
+					`${usedWordsSort.length >= 3 ? [`${s} **${usedWordsSort[0][0]}**: \`${usedWordsSort[0][1]} times\``,
 					`${s} **${usedWordsSort[1][0]}**: \`${usedWordsSort[1][1]} times\``,
-					`${s} **${usedWordsSort[2][0]}**: \`${usedWordsSort[2][1]} times\``,
+					`${s} **${usedWordsSort[2][0]}**: \`${usedWordsSort[2][1]} times\``].join('\n'): 'Error: No messages were recorded :('}`
 				].join('\n')
 			)
 			.setThumbnail(message.guild.iconURL({ size: 2048 }))

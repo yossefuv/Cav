@@ -1,12 +1,17 @@
 const { prefix } = require('../config');
 const { version } = require('../package.json');
-const versions = {
-    production: 'Production',
-    development: 'Development'
-};
 
 var settings =  {
     channelToLog: undefined,
+    preferences: {
+     mention: false,
+     removeCommonWords: true,
+    },
+    messages: {
+         usedWords: {}, 
+         count: 0,
+         lastUser: 'none'
+    },
     loggedChannels: [],
     enabled: false
  };

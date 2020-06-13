@@ -3,7 +3,7 @@ const { MessageEmbed } = require('discord.js');
 exports.run = async (client, message, args) => {
 
     if (!message.member.permissions.has("ADMINISTRATOR")) return;
-    if (!args[0]) return message.channel.send(new MessageEmbed().setDescription('Log: enable/disable logging and select the channel you want to log to\n **Usage:** log enable|disble|channel [channel]').setColor(0x00b9ff));
+    if (!args[0]) return message.channel.send(new MessageEmbed().setDescription('Log: enable/disable logging and select the channel you want to log to\n **Usage:** log enable|disable|channel [channel]').setColor(0x00b9ff));
     var settings = client.db.get(message.guild.id);
     if (args[0].toLowerCase() == "enable") {
         if (settings.enabled) return message.channel.send(new MessageEmbed().setDescription('Logging is already enabled').setColor(0xFF0000));

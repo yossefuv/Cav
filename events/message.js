@@ -53,7 +53,7 @@ async function LogMsg(client, message) {
 			if (vaildCmd && message.member.permissions.has('ADMINISTRATOR')) return;
 			if (!settings.channelToLog) return;
 			const channel = message.guild.channels.cache.get(settings.channelToLog);
-			channel.send(`${message.channel} ${settings.messages.lastUser === `${message.channel.id}.${message.author.id}` ? '... ' : `${message.author.username} \`(${message.author.id})\`:`} ${message.content}${message.attachments.size !== 0 ? `\n ${message.attachments.map(a => a.url).join('\n')}`: ''}`);
+			channel.send(`${message.channel} ${settings.messages.lastUser === `${message.channel.id}.${message.author.id}` ? '\`...\`:' : `\`${message.author.id}\` \`${message.member.nickname ? message.member.nickname:message.author.username}\`:`} ${message.content}${message.attachments.size !== 0 ? `\n ${message.attachments.map(a => a.url).join('\n')}`: ''}`);
 			client.db.set(message.guild.id, `${message.channel.id}.${message.author.id}`, 'messages.lastUser');
 
 		}

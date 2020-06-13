@@ -16,7 +16,7 @@ logs every message that being sent in select channels you choose
 5. > do `node app.js` to run the bot
 
 
-### Change log [1.1.1]:
+### Change log [1.1.2]:
 
 > bug fixes
 

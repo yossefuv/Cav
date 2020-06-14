@@ -21,8 +21,7 @@ async function remove(input) {
        var stopwords = await load()
  
     if (!Array.isArray(input)) {
-        // Lazy tokenization by whitespace
-        input = input.split(' ');
+        input = input.replace(/(?:[,.*`])|(?:'t)|<(?:[^\d>]+|:[A-Za-z0-9]+:)\w+>|/gi, '').split(' ');
         return input.filter(function (word) {
             return !stopwords.has(word)
         }).join(' ');

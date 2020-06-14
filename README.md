@@ -16,7 +16,7 @@ logs every message that being sent in select channels you choose
 5. > do `node app.js` to run the bot
 
 
-### Change log [1.1.2]:
+### Change log [1.3.2]:
 
 > bug fixes
 
@@ -24,6 +24,7 @@ logs every message that being sent in select channels you choose
 
 > reset command
 
+> added cases for when a message is edited&deleted
 
 > remove common used words from recored messages
 

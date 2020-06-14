@@ -1,4 +1,4 @@
-const { prefix } = require('../config');
+const { prefix, messageTimeout } = require('../config');
 const commonRemover = require('../commonWords/index.js');
 
 //commonRemover.load();
@@ -39,7 +39,6 @@ async function LogMsg(client, message) {
 		if (!message.content.startsWith(prefix)) {
 			let temp = await commonRemover.remove(message.content.toLowerCase())
 		   const msgArr = temp.split(' ');
-
 			await msgArr.map(w => {
 				usedWords[w] ? (usedWords[w] += 1) : (usedWords[w] = 1);
 			});
@@ -53,11 +52,14 @@ async function LogMsg(client, message) {
 			if (vaildCmd && message.member.permissions.has('ADMINISTRATOR')) return;
 			if (!settings.channelToLog) return;
 			const channel = message.guild.channels.cache.get(settings.channelToLog);
-			channel.send(`${message.channel} ${settings.messages.lastUser === `${message.channel.id}.${message.author.id}` ? '\`...\`:' : `\`${message.author.id}\` \`${message.member.nickname ? message.member.nickname:message.author.username}\`:`} ${message.content}${message.attachments.size !== 0 ? `\n ${message.attachments.map(a => a.url).join('\n')}`: ''}`);
-			client.db.set(message.guild.id, `${message.channel.id}.${message.author.id}`, 'messages.lastUser');
+			channel.send(`${message.channel} ${settings.messages.lastUser === `${message.channel.id}.${message.author.id}` ? '...' : `\`${message.author.id}\` \`${message.member.nickname ? message.member.nickname:message.author.username}\`:`} ${message.content}${message.attachments.size !== 0 ? `${message.attachments.map(a => a.url).join('\n')}`: ''}`).then(msg => {
+				client.db.set(message.guild.id, `${message.channel.id}.${message.author.id}`, 'messages.lastUser');
+				client.db.set('messageRecords', { timestap: new Date().getTime(), loggedID: msg.id }, message.id);
+			});
 
 		}
 	}
 }
+
 
 // [Link](https://discordapp.com/channels/${message.guild.id}/${message.channel.id}/${message.id})

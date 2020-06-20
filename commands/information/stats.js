@@ -11,6 +11,8 @@ class StatsCommand extends Command {
     constructor() {
         super('stats', {
             aliases: ['stats', 'status'],
+            category: 'information',
+			description: { content: 'view information about the bot' },
             cooldown: 5000
         });
     }

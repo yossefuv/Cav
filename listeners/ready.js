@@ -5,6 +5,7 @@ const {
 const {
     defaultPrefix
 } = require('../config.js');
+const CBuffer = require('CBuffer');
 
 const { version, name } = require('../package.json');
 
@@ -28,7 +29,7 @@ const settings =  {
 
  const global = {
      messageTimeout: 180,
-     bufferLimit: 2000,
+     bufferLimit: 500,
  }
 module.exports = class ReadyListener extends Listener {
     constructor() {
@@ -46,10 +47,11 @@ module.exports = class ReadyListener extends Listener {
             if(!this.client.db.has(guild.id)) {
                 this.client.db.set(guild.id,settings);
             }
+            this.client.db.set(guild.id, new CBuffer(global.bufferLimit + 1) , 'messages.buffer')
         });
 
         await this.client.db.set('messageRecords', {});
-       if (!this.client.db.has('global')) {
+       if (this.client.db.has('global')) {
         await this.client.db.set('global', global)
        }       
        var gg = this.client.db.get('global') || global;
@@ -66,11 +68,9 @@ module.exports = class ReadyListener extends Listener {
               });
               this.client.db.set('messageRecords', y);
           }, gg['messageTimeout']*1000);
-          
-          
-
 
         await this.client.logger.log(`Successfully initialized databases.`);
+
 
         await this.client.logger.log(`Logged in as ${this.client.user.tag} (${this.client.user.id}) in ${this.client.guilds.cache.size} server(s).`);
         await this.client.logger.log(`Version ${version} of ${name} loaded.`);

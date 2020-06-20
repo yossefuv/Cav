@@ -7,6 +7,8 @@ class EvalCommand extends Command {
     constructor() {
         super('eval', {
             aliases: ['eval', 'ev'],
+            category: 'admin',
+			description: { content: 'eval js code' },
             ownerOnly: true
         });
     }

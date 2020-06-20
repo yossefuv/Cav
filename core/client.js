@@ -38,7 +38,7 @@ module.exports = class GuardianClient extends AkairoClient {
             directory: path.join(__dirname, '..', 'listeners/')
         });
 
-		this.db = new db({ name: 'storage' });
+        this.db = new db({ name: 'storage' });
         this.Utils = new Utils(this);
         this.logger = require('./logger');
 

@@ -5,7 +5,9 @@ const {
 class PingCommand extends Command {
     constructor() {
         super('ping', {
-            aliases: ['ping']
+            aliases: ['ping', 'pong'],
+            category: 'general',
+			description: { content: 'ping anyone?' },
         });
     }
 

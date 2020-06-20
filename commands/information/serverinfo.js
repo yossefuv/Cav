@@ -10,13 +10,15 @@ class ServerinfoCommand extends Command {
     constructor() {
         super('serverinfo', {
             aliases: ['serverinfo', 'sinfo', 'si'],
+            category: 'information',
+			description: { content: 'view information about the server' },
             channel: 'guild'
         });
     }
 
     async exec(message) {
         const s = '[**»**](https://google.com/)';
-        const { usedWords, count } = message.guild.get('messages');
+        const { usedWords, count, wordLogging } = message.guild.get('messages');
         const usedWordsSort = [];
         Object.entries(usedWords).map(([key, value]) => usedWordsSort.push([key, value]));
         usedWordsSort.sort(function (a, b) {
@@ -38,9 +40,10 @@ class ServerinfoCommand extends Command {
                         `${s} Recorded messages: \`${count}\``,
                         '',
                         `**Top words used** ${s}`,
+                        `${ wordLogging ? 
                         `${usedWordsSort.length >= 3 ? [`${s} **${usedWordsSort[0][0]}**: \`${usedWordsSort[0][1]} times\``,
                         `${s} **${usedWordsSort[1][0]}**: \`${usedWordsSort[1][1]} times\``,
-                        `${s} **${usedWordsSort[2][0]}**: \`${usedWordsSort[2][1]} times\``].join('\n'): 'Error: No messages were recorded :('}`
+                        `${s} **${usedWordsSort[2][0]}**: \`${usedWordsSort[2][1]} times\``].join('\n'): 'Error: No messages were recorded :('}`: '\`Sorry but this feature is disabled here\`'}`
                     ].join('\n')
                 )
                 .setThumbnail(message.guild.iconURL({ size: 2048 }))

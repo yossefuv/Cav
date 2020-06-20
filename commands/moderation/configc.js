@@ -5,7 +5,6 @@ const {
 const {
      MessageEmbed
  } = require('discord.js');
- const s = '[**»**](https://google.com/)';
  
  const {
       version,
@@ -17,7 +16,9 @@ const {
 class ConfigCommand extends Command {
     constructor() {
         super('config', {
-            aliases: ['config'],
+            aliases: ['config', 'settings'],
+            category: 'moderation',
+			description: { content: 'view/change the bot settings' },
             cooldown: 2000,
             args: [
 				{

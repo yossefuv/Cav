@@ -1,7 +1,7 @@
 {
   "name": "clog",
   "version": "v2.0.0",
-  "description": "cLog",
+  "description": "cLog is bot to log all the messages sent in your server in one place.",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
@@ -15,6 +15,7 @@
   "license": "MIT",
   "homepage": "https://github.com/xYossaf/cLog",
   "dependencies": {
+    "CBuffer": "^2.1.0",
     "better-sqlite3": "^7.1.0",
     "chalk": "^4.1.0",
     "discord-akairo": "^8.0.0",

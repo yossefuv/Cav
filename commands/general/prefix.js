@@ -6,6 +6,8 @@ class PrefixCommand extends Command {
     constructor() {
         super('prefix', {
             aliases: ['prefix'],
+            category: 'general',
+			description: { content: 'change the bot prefix' },
             args: [{
                 id: 'prefix'
             }],

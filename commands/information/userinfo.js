@@ -11,6 +11,8 @@ class UserinfoCommand extends Command {
     constructor() {
         super('userinfo', {
             aliases: ['userinfo', 'useri', 'whois', 'ui'],
+            category: 'information',
+			description: { content: 'view information about a user' },
             cooldown: 2000,
             args: [
 				{

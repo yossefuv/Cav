@@ -30,7 +30,6 @@ class InfoCommand extends Command {
     }
 
     async exec(message) {
-        settings = message.guild.get();
         const s = '[**»**](https://google.com/)';
 
 

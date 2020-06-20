@@ -51,7 +51,7 @@ module.exports = class ReadyListener extends Listener {
         });
 
         await this.client.db.set('messageRecords', {});
-       if (this.client.db.has('global')) {
+       if (!this.client.db.has('global')) {
         await this.client.db.set('global', global)
        }       
        var gg = this.client.db.get('global') || global;

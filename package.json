@@ -1,36 +1,29 @@
 {
   "name": "clog",
-  "version": "1.3.2",
-  "description": "bruh",
-  "main": "app.js",
+  "version": "v2.0.0",
+  "description": "cLog",
+  "main": "index.js",
   "scripts": {
-    "start": "node .",
-    "test": "eslint",
-    "lint": "eslint --fix .",
-    "prod": "SET NODE_ENV=production&&npm start",
-    "dev": "SET NODE_ENV=development&&nodemon"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node index.js"
   },
-  "author": "xYossaf <yossef01102015@gmail.conm>",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/xYossaf/cLog.git"
+  },
+  "author": "xYossaf",
   "license": "MIT",
+  "homepage": "https://github.com/xYossaf/cLog",
   "dependencies": {
-    "better-sqlite-pool": "^0.3.0",
-    "better-sqlite3": "^7.0.1",
-    "common-tags": "^1.8.0",
-    "discord.js": "github:discordjs/discord.js",
-    "dotenv-flow": "^0.1.0",
+    "better-sqlite3": "^7.1.0",
+    "chalk": "^4.1.0",
+    "discord-akairo": "^8.0.0",
+    "discord.js": "^12.0.2",
+    "dotenv": "^8.2.0",
     "enmap": "^5.3.1",
-    "moment": "^2.22.2",
-    "moment-duration-format": "^2.2.2",
-    "moment-timezone": "^0.5.21"
-  },
-  "devDependencies": {
-    "eslint": "^6.8.0",
-    "eslint-config-airbnb-base": "^14.1.0",
-    "eslint-config-node": "^4.0.0",
-    "eslint-config-prettier": "^6.11.0",
-    "eslint-plugin-import": "^2.20.2",
-    "eslint-plugin-node": "^11.1.0",
-    "eslint-plugin-prettier": "^3.1.3",
-    "prettier": "^2.0.5"
+    "moment": "^2.27.0",
+    "moment-duration-format": "^2.3.2",
+    "node-fetch": "^2.6.0",
+    "path": "^0.12.7"
   }
 }

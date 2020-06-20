@@ -60,6 +60,7 @@ async function LogMsg(client, message) {
                 if (length > global.bufferLimit) {
                   var oldValue = await buffer.shift();
                   var oldMsg = await channel.messages.cache.get(oldValue);
+                  if (!oldMsg) return;
                   oldMsg.delete().catch(O_o => {});
                 }
                 client.db.set(message.guild.id, buffer, 'messages.buffer')

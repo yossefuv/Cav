@@ -28,8 +28,8 @@ const settings =  {
 // messageTimeout | in seconds
 
  const global = {
-     messageTimeout: 180,
-     bufferLimit: 500,
+     messageTimeout: Number(process.env.MESSAGETIMEOUT),
+     bufferLimit: Number(process.env.MESSAGELIMIT),
  }
 module.exports = class ReadyListener extends Listener {
     constructor() {

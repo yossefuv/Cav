@@ -72,7 +72,7 @@ class HelpCommand extends Command {
             `${s} description: \`${command.description.content}\``,
             `${s} category: \`${command.categoryID}\``,
             `${s} Guild only?: \`${command.channel === 'guild' ? "Yes":"No"}\``,
-            `${command.ownerOnly ? `\`${s} ownerOnly?: Yes\``: ''}`
+            `${command.ownerOnly ? `${s} ownerOnly?: \`Yes\``: ''}`
 
         ])
         .setTitle(`**${this.client.user.username} » Help » ${command.id}**`)
@@ -104,12 +104,13 @@ class HelpCommand extends Command {
 
        const filter = m => m.author.id === message.author.id;
 
-       let categoryval = await message.channel.awaitMessages(filter, {
+       let categoryval;
+        await message.channel.awaitMessages(filter, {
           max: 1, time: 35000, errors: ['time']
-      }).catch(() =>  message.channel.send("Command timeout."));
+        }).then((collected => categoryval = collected)).catch(() => message.channel.send('Command timeout'));
       
 
-       if (!categoryval.first()) return;
+       if (!categoryval) return;
        var categoryMessage = categoryval.first();
        if (categoryval) categoryval = categoryval.first().content.toLowerCase();
        

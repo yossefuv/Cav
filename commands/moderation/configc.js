@@ -68,11 +68,12 @@ const msg = await message.channel.send(initial);
 
 const filter = m => m.author.id === message.author.id;
 
-let category = await message.channel.awaitMessages(filter, {
+let category;
+ await message.channel.awaitMessages(filter, {
     max: 1, time: 35000, errors: ['time']
-}).catch(() =>  message.channel.send("Command timeout."));
-
-if (!category.first()) return;
+}).then((collected => category = collected)).catch(() => message.channel.send('Command timeout.'));
+		
+if(!category) return;
 var categoryMessage = category.first();
 if (category) category = category.first().content.toLowerCase();
 
@@ -92,7 +93,7 @@ var catagoriesText = [
     ],
     [
         G,
-        `${s} channel: \`${getChannel(settings.channelToLog)}\``,
+        `${s} channel: ${getChannel(settings.channelToLog)}`,
         '',
         `Type the new channel to change it`
     ],
@@ -124,11 +125,12 @@ var catagoriesText = [
   categoryMessage.delete().catch(O_o => {});
   msg.edit(embed);
 
-  let value = await message.channel.awaitMessages(filter, {
+  let value;
+   await message.channel.awaitMessages(filter, {
     max: 1, time: 35000, errors: ['time']
-}).catch(() => message.error("Command timeout."));
+}).then((collected => value = collected)).catch(() => message.channel.send('Command timeout.'));
 
-if (!value.first()) return;
+if (!value) return;
 
 var valueFilter = [
     {
@@ -185,11 +187,12 @@ value = value.first();
         value.delete().catch(O_o => {});;
         msg.edit(embed);
       
-        let removed = await message.channel.awaitMessages(filter, {
+        let removed;
+         await message.channel.awaitMessages(filter, {
           max: 1, time: 35000, errors: ['time']
-      }).catch(() => message.error("Command timeout."));
+        }).then((collected => removed = collected)).catch(() => message.channel.send('Command timeout.'));
       
-      if (!removed.first()) return;
+      if (!removed) return;
       if (removed.first().content.toLowerCase() === 'all') {
         await this.client.db.set(message.guild.id, [], valueFilter.path)
         return message.channel.send(`Removed all channels`)

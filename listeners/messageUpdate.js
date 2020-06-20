@@ -27,7 +27,19 @@ module.exports = class MessageUpdateListener extends Listener {
   
        message.edit(`${text.replace('\n','')}:pencil: ${newMessage.content} ${newMessage.attachments.size !== 0 ? `${newMessage.attachments.map(a => a.url).join('\n')}`: ''}`)
       } else {
-      channel.send(`${newMessage.channel} ${settings.messages.lastUser === `${newMessage.channel.id}.${newMessage.author.id}` ? '...' : `\`${newMessage.author.id}\` \`${newMessage.member.nickname ? newMessage.member.nickname:newMessage.author.username}\``} :pencil:: ${newMessage.content}${newMessage.attachments.size !== 0 ? `\n ${newMessage.attachments.map(a => a.url).join('\n')}`: ''}`);
+      channel.send(`${newMessage.channel} ${settings.messages.lastUser === `${newMessage.channel.id}.${newMessage.author.id}` ? '...' : `\`${newMessage.author.id}\` \`${newMessage.member.nickname ? newMessage.member.nickname:newMessage.author.username}\``} :pencil:: ${newMessage.content}${newMessage.attachments.size !== 0 ? `\n ${newMessage.attachments.map(a => a.url).join('\n')}`: ''}`).then(async (msg) => {
+         var buffer = this.client.db.get(newMessage.guild.id,'messages.buffer')
+         var length = await buffer.push(msg.id);
+         var global = this.client.db.get('global');
+
+         if (length > global.bufferLimit) {
+           var oldValue = await buffer.shift();
+           var oldMsg = await channel.messages.cache.get(oldValue);
+           if (!oldMsg) return;
+           oldMsg.delete().catch(O_o => {});
+         }
+         this.client.db.set(newMessage.guild.id, buffer, 'messages.buffer')
+      });
       }
       } 
 

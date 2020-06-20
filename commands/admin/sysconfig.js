@@ -43,7 +43,7 @@ class SystemConfigCommand extends Command {
       `Note: after changing any value here a restart is required to use the new values`,
       '',
       `${s} **Message Timeout** **\`(view, change)\`**`,
-      `${s} **Messag Limit** **\`(view, change)\`**`,
+      `${s} **Message Limit** **\`(view, change)\`**`,
       '',
     ].join('\n');
 

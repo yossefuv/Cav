@@ -1,4 +1,4 @@
 module.exports = {
-    defaultPrefix: '?',
-    ownerID: '191615236363649025',
+    defaultPrefix: process.env.PREFIX,
+    ownerID:  process.env.OWNERID,
 }

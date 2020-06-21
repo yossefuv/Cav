@@ -60,7 +60,7 @@ class HelpCommand extends Command {
     return message.channel.send(embed);
       }
       if (this.client.commandHandler.modules.get(option) || this.client.commandHandler.aliases.get(option)) {
-        var command = this.client.commandHandler.modules.get(option) || this.client.commandHandler.aliases.get(option);
+        var command = this.client.commandHandler.modules.get(option) || this.client.commandHandler.modules.get(this.client.commandHandler.aliases.get(option));
         if (command.ownerOnly && ownerID !== message.author.id) return message.channel.send(`You need to be the bot developer to view this command`)
         let embed = new MessageEmbed()
         .setDescription([

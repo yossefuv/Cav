@@ -11,6 +11,8 @@ module.exports = class MessageUpdateListener extends Listener {
    }
 
    async exec(oldMessage, newMessage) {
+      if (newMessage.author.bot) return;
+
       var settings = this.client.db.get(newMessage.guild.id);
       if(settings.messages.enabled && settings.loggedChannels.includes(newMessage.channel.id) && newMessage.author !== this.client.user) {
        var active = await this.client.db.get('messageRecords');
@@ -20,14 +22,16 @@ module.exports = class MessageUpdateListener extends Listener {
          var message = newMessage.guild.channels.cache.get(settings.channelToLog).messages.cache.get(active[newMessage.id].loggedID);
          if (!message) return;
   
-       let text = message.content.replace(oldMessage, '');
+       let text = message.content.replace(await replaceMentions(oldMessage, oldMessage.content), '');
        //let regex = '(https?:\/\/[^\s]+)|(:pencil:)|[:]'
           text = text.replace(/https?:\/\/[^\s]+/gi, '');
           text = text.replace(':pencil:', '')
-  
-       message.edit(`${text.replace('\n','')}:pencil: ${newMessage.content} ${newMessage.attachments.size !== 0 ? `${newMessage.attachments.map(a => a.url).join('\n')}`: ''}`)
+        let textTwoSend = await replaceMentions(newMessage, newMessage.content);
+
+       message.edit(`${text.replace('\n','')}:pencil: ${textTwoSend} ${newMessage.attachments.size !== 0 ? `${newMessage.attachments.map(a => a.url).join('\n')}`: ''}`)
       } else {
-      channel.send(`${newMessage.channel} ${settings.messages.lastUser === `${newMessage.channel.id}.${newMessage.author.id}` ? '...' : `\`${newMessage.author.id}\` \`${newMessage.member.nickname ? newMessage.member.nickname:newMessage.author.username}\``} :pencil:: ${newMessage.content}${newMessage.attachments.size !== 0 ? `\n ${newMessage.attachments.map(a => a.url).join('\n')}`: ''}`).then(async (msg) => {
+      let textTwoSend = await replaceMentions(newMessage, newMessage.content);
+      channel.send(`${newMessage.channel} ${settings.messages.lastUser === `${newMessage.channel.id}.${newMessage.author.id}` ? '...' : `\`${newMessage.author.id}\` \`${newMessage.member.nickname ? newMessage.member.nickname:newMessage.author.username}\``} :pencil:: ${textTwoSend}${newMessage.attachments.size !== 0 ? `\n ${newMessage.attachments.map(a => a.url).join('\n')}`: ''}`).then(async (msg) => {
          var buffer = this.client.db.get(newMessage.guild.id,'messages.buffer')
          var length = await buffer.push(msg.id);
          var global = this.client.db.get('global');
@@ -45,3 +49,18 @@ module.exports = class MessageUpdateListener extends Listener {
 
    }
 }
+
+async function replaceMentions (message, text) {
+
+   var mentions = message.mentions.users;
+   if (mentions.size === 0) return text.replace(/(@everyone+)|(@here+)/gi, `\`everyone\``);
+   mentions.forEach(async (user) => {
+       let nickname = message.guild.members.cache.get(user.id);
+       nickname = nickname.nickname ? nickname.nickname : nickname.user.username;
+       text = text.replace(/<\B@[!a-z0-9_-]+>/, `\`${nickname} ${user.id}\``);
+       let regex = new RegExp(`(<@${user.id}+>)|(<@!${user.id}+>)`, 'g');
+       text = text.replace(regex, `\`${nickname} ${user.id}\``);
+   });
+   text = text.replace(/(@everyone+)|(@here+)/gi, `\`everyone\``)
+ return text;
+ }

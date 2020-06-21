@@ -13,7 +13,8 @@ const {
 
  
  const {
-    ownerID
+    ownerID,
+    defaultPrefix: prefix 
 } = require('../../config.js');
 
  var settings;
@@ -36,7 +37,7 @@ class HelpCommand extends Command {
     }
 
     async exec(message, { option }) {
-        settings = message.guild.get();
+        settings = message.guild ? message.guild.get() : { prefix }
         const s = '[**»**](https://google.com/)';
 
      if (option) {
@@ -83,17 +84,15 @@ class HelpCommand extends Command {
      } else {
       var catagroiess = await this.client.commandHandler.categories.map(c => c.id);
       if (ownerID !== message.author.id) catagroiess = catagroiess.filter(c => c !== 'admin')
-       
         var text = [
             `View help information for ${this.client.user}`,
             `Do ${settings.prefix}help <command> for specific help information ${s}`,
             '',
-            `Type the name (bold) of these catagroies to view the category ${s}`,
+            `${message.channel.type === 'dm' ? `Type ${settings.prefix}help <category> to see the commands ${s}` : `Type the name (bold) of these catagroies to view the category ${s}`}`,
             '',
             `${catagroiess.map(c => `${s} **${c}**`).join('\n')}`,
             '',
           ].join('\n');
-      
           const initial = new MessageEmbed()
           .setDescription(text)
           .setTitle(`**${this.client.user.username} » Help**`)
@@ -102,6 +101,7 @@ class HelpCommand extends Command {
       
           const msg = await message.channel.send(initial);
 
+       if (message.channel.type === 'dm') return;
        const filter = m => m.author.id === message.author.id;
 
        let categoryval;

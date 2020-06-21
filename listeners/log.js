@@ -50,8 +50,8 @@ async function LogMsg(client, message) {
             
 			if (!settings.channelToLog) return;
             const channel = message.guild.channels.cache.get(settings.channelToLog);
-            
-			channel.send(`${message.channel} ${settings.messages.lastUser === `${message.channel.id}.${message.author.id}` ? '...' : `\`${message.author.id}\` \`${message.member.nickname ? message.member.nickname:message.author.username}\`:`} ${message.content}${message.attachments.size !== 0 ? `${message.attachments.map(a => a.url).join('\n')}`: ''}`).then(async (msg) => {
+            var contentToSend = await replaceMentions(message, message.content);
+			channel.send(`${message.channel} ${settings.messages.lastUser === `${message.channel.id}.${message.author.id}` ? '...' : `\`${message.author.id}\` \`${message.member.nickname ? message.member.nickname:message.author.username}\`:`} ${contentToSend}${message.attachments.size !== 0 ? `${message.attachments.map(a => a.url).join('\n')}`: ''}`).then(async (msg) => {
 				client.db.set(message.guild.id, `${message.channel.id}.${message.author.id}`, 'messages.lastUser');
                 client.db.set('messageRecords', { timestap: new Date().getTime(), loggedID: msg.id }, message.id);
                 var buffer = message.guild.get('messages.buffer', new CBuffer(global.bufferLimit + 1))
@@ -69,3 +69,17 @@ async function LogMsg(client, message) {
 
  }
 }
+async function replaceMentions (message, text) {
+
+    var mentions = message.mentions.users;
+    if (mentions.size === 0) return text.replace(/(@everyone+)|(@here+)/gi, `\`everyone\``);
+    mentions.forEach(async (user) => {
+        let nickname = message.guild.members.cache.get(user.id);
+        nickname = nickname.nickname ? nickname.nickname : nickname.user.username;
+        text = text.replace(/<\B@[!a-z0-9_-]+>/, `\`${nickname} ${user.id}\``);
+        let regex = new RegExp(`(<@${user.id}+>)|(<@!${user.id}+>)`, 'g');
+        text = text.replace(regex, `\`${nickname} ${user.id}\``);
+    });
+    text = text.replace(/(@everyone+)|(@here+)/gi, `\`everyone\``)
+  return text;
+  }

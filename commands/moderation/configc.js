@@ -55,7 +55,7 @@ class ConfigCommand extends Command {
       `${s} **Logged channels** **\`(view, change)\`**`,
       `${s} **Word Logging** **\`(view, change)\`**`,
 
-      '',
+      `${!settings.status.active ? settings.status.type === 'failled' ? `\n***** **${this.client.user.username}** has been disabled here, verification is required to regain functionality.`:`\n***** **${this.client.user.username}** has been permanently disabled here.` : ''}`,
     ].join('\n');
 
     const initial = new MessageEmbed()
@@ -65,6 +65,9 @@ class ConfigCommand extends Command {
     .setColor(0x4dd0e1)
 
 const msg = await message.channel.send(initial);
+
+
+if (!settings.status.active) return;
 
 const filter = m => m.author.id === message.author.id;
 

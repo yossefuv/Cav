@@ -23,8 +23,8 @@ module.exports = class ReadyListener extends Listener {
 
 async function LogMsg(client, message) {
     var settings = message.guild.get();
-    var global = client.db.get('global');
 
+    if (!settings.status.active) return;
     if (!settings.messages.enabled) return;
     
     if (settings.messages.wordLogging) {
@@ -51,13 +51,13 @@ async function LogMsg(client, message) {
 			if (!settings.channelToLog) return;
             const channel = message.guild.channels.cache.get(settings.channelToLog);
             var contentToSend = await replaceMentions(message, message.content);
-			channel.send(`${message.channel} ${settings.messages.lastUser === `${message.channel.id}.${message.author.id}` ? '...' : `\`${message.author.id}\` \`${message.member.nickname ? message.member.nickname:message.author.username}\`:`} ${contentToSend}${message.attachments.size !== 0 ? `${message.attachments.map(a => a.url).join('\n')}`: ''}`).then(async (msg) => {
-				client.db.set(message.guild.id, `${message.channel.id}.${message.author.id}`, 'messages.lastUser');
+			channel.send(`${message.channel} ${message.guild.lastUser || '' === `${message.channel.id}.${message.author.id}` ? '...' : `\`${message.author.id}\` \`${message.member.nickname ? message.member.nickname:message.author.username}\`:`} ${contentToSend}${message.attachments.size !== 0 ? `${message.attachments.map(a => a.url).join('\n')}`: ''}`).then(async (msg) => {
+                message.guild.updateLastUser(message);
                 client.db.set('messageRecords', { timestap: new Date().getTime(), loggedID: msg.id }, message.id);
-                var buffer = message.guild.get('messages.buffer', new CBuffer(global.bufferLimit + 1))
+                var buffer = message.guild.get('messages.buffer', new CBuffer(client.global.bufferLimit + 1))
                 var length = await buffer.push(msg.id);
 
-                if (length > global.bufferLimit) {
+                if (length > client.global.bufferLimit) {
                   var oldValue = await buffer.shift();
                   var oldMsg = await channel.messages.cache.get(oldValue);
                   if (!oldMsg) return;

@@ -14,6 +14,7 @@ module.exports = class MessageUpdateListener extends Listener {
       if (newMessage.author.bot) return;
 
       var settings = this.client.db.get(newMessage.guild.id);
+      if (!settings.status.active) return;
       if(settings.messages.enabled && settings.loggedChannels.includes(newMessage.channel.id) && newMessage.author !== this.client.user) {
        var active = await this.client.db.get('messageRecords');
        var channel = newMessage.guild.channels.cache.get(settings.channelToLog);
@@ -31,7 +32,7 @@ module.exports = class MessageUpdateListener extends Listener {
        message.edit(`${text.replace('\n','')}:pencil: ${textTwoSend} ${newMessage.attachments.size !== 0 ? `${newMessage.attachments.map(a => a.url).join('\n')}`: ''}`)
       } else {
       let textTwoSend = await replaceMentions(newMessage, newMessage.content);
-      channel.send(`${newMessage.channel} ${settings.messages.lastUser === `${newMessage.channel.id}.${newMessage.author.id}` ? '...' : `\`${newMessage.author.id}\` \`${newMessage.member.nickname ? newMessage.member.nickname:newMessage.author.username}\``} :pencil:: ${textTwoSend}${newMessage.attachments.size !== 0 ? `\n ${newMessage.attachments.map(a => a.url).join('\n')}`: ''}`).then(async (msg) => {
+      channel.send(`${newMessage.channel} ${newMessage.guild.lastUser || '' === `${newMessage.channel.id}.${newMessage.author.id}` ? '...' : `\`${newMessage.author.id}\` \`${newMessage.member.nickname ? newMessage.member.nickname:newMessage.author.username}\``} :pencil:: ${textTwoSend}${newMessage.attachments.size !== 0 ? `${newMessage.attachments.map(a => a.url).join('\n')}`: ''}`).then(async (msg) => {
          var buffer = this.client.db.get(newMessage.guild.id,'messages.buffer')
          var length = await buffer.push(msg.id);
          var global = this.client.db.get('global');

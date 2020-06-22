@@ -14,6 +14,7 @@ module.exports = class MessageDeleteistener extends Listener {
       if (message.author.bot) return;
 
       var settings = this.client.db.get(message.guild.id);
+      if (!settings.status.active) return;
       if(settings.messages.enabled && settings.loggedChannels.includes(message.channel.id) && message.author !== this.client.user) {
          var active =  await this.client.db.get('messageRecords');
          var channel = message.guild.channels.cache.get(settings.channelToLog);
@@ -26,7 +27,7 @@ module.exports = class MessageDeleteistener extends Listener {
           message.delete().catch(O_o => {});
         } else {
          let textTwoSend = await replaceMentions(message, message.content);
-        channel.send(`${message.channel} ${settings.messages.lastUser === `${message.channel.id}.${message.author.id}` ? '... :x:' : `\`${message.author.id}\` \`${message.member.nickname ? message.member.nickname:message.author.username}\`:x::`}  ${textTwoSend}${message.attachments.size !== 0 ? `${message.attachments.map(a => a.url).join('\n')}`: ''}`).then(async (msg) => {
+        channel.send(`${message.channel} ${message.guild.lastUser || '' === `${message.channel.id}.${message.author.id}` ? '... :x:' : `\`${message.author.id}\` \`${message.member.nickname ? message.member.nickname:message.author.username}\`:x::`}  ${textTwoSend}${message.attachments.size !== 0 ? `${message.attachments.map(a => a.url).join('\n')}`: ''}`).then(async (msg) => {
          var buffer = message.guild.get('messages.buffer')
          var length = await buffer.push(msg.id);
          var global = this.client.db.get('global');

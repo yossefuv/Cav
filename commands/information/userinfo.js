@@ -39,7 +39,7 @@ class UserinfoCommand extends Command {
     var createdOn = tuser.user.createdAt.toDateString()
       , joinedOn = tuser.joinedAt.toDateString()
       , roles = tuser.roles.cache.array().slice(0,15).sort((a, b) => a.comparePositionTo(b)).reverse()
-      , activeClients = Object.entries(tuser.presence.clientStatus)
+      , activeClients = Object.entries(tuser.presence.clientStatus || {}) 
       , postion = await getJoinPostion(message.guild, tuser.id);
 
     if (options === '--detailed') {

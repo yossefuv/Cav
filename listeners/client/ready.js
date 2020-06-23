@@ -45,7 +45,7 @@ module.exports = class ReadyListener extends Listener {
        await this.client.logger.log(`Initializing databases...`)
 
         this.client.guilds.cache.map(guild => {
-            if(this.client.db.has(guild.id)) {
+            if(!this.client.db.has(guild.id)) {
                 this.client.db.set(guild.id,settings);
             }
             this.client.db.set(guild.id, new CBuffer(global.bufferLimit + 1) , 'messages.buffer')

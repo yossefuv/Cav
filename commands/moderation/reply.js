@@ -31,13 +31,15 @@ class ReplyCommand extends Command {
                     type: 'string',
 				},
             ],
-            userPermissions: ['MANAGE_GUILD'],
             channel: 'guild'
 
         });
     }
 
     async exec(message, { channel, text }) {
+       var { modRole } = await message.guild.get();
+       if (!(message.member.roles.cache.get(modRole) || message.member.permissions.has('MANAGE_GUILD'))) return message.channel.send('Invaild perms');
+
        if (!channel | !text) return message.channel.send('Invaild input');
        channel.send(`\`${message.member.nickname ? message.member.nickname:message.author.username}\`: ${text}`);
     }

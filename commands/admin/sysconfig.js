@@ -42,8 +42,8 @@ class SystemConfigCommand extends Command {
       `Type the name (bold) of these catagroies to view/change the system values ${s}`,
       `Note: after changing any value here a restart is required to use the new values`,
       '',
-      `${s} **Message Timeout** **\`(view, change)\`**`,
-      `${s} **Message Limit** **\`(view, change)\`**`,
+      `${s} **Message Timeout** **\`(view)\`**`,
+      `${s} **Message Limit** **\`(view)\`**`,
       '',
     ].join('\n');
 
@@ -73,14 +73,10 @@ var catagoriesText = [
     [
         G,
         `${s} Timeout (in seconds): \`${global.messageTimeout}\``,
-        '',
-        `Type in the new Timeout (in seconds) for the the bot`
     ],
     [
         G,
         `${s} Limit: \`${global.bufferLimit}\``,
-        '',
-        `type in the new message limit for messages`
     ],
 
 ]
@@ -93,7 +89,7 @@ var catagoriesText = [
 
   categoryMessage.delete().catch(O_o => {});
   msg.edit(embed);
-
+/*
   let value = await message.channel.awaitMessages(filter, {
     max: 1, time: 35000, errors: ['time']
 }).catch(() => message.error("Command timeout."));
@@ -123,7 +119,7 @@ value = value.first();
 
 if (!finalValue) return message.channel.send('Invaild input');
 await this.client.db.set('global', finalValue, valueFilter.path)
-message.channel.send(`Changed \`${category}\` to \`${finalValue}\``)
+message.channel.send(`Changed \`${category}\` to \`${finalValue}\``)*/
     }
 }
 

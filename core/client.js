@@ -45,6 +45,14 @@ module.exports = class GuardianClient extends AkairoClient {
     }
 
     async login(token) {
+
+		this.commandHandler.useListenerHandler(this.listenerHandler);
+		this.listenerHandler.setEmitters({
+			commandHandler: this.commandHandler,
+			listenerHandler: this.listenerHandler,
+		});
+
+
         this.commandHandler.loadAll();
         this.commandHandler.useListenerHandler(this.listenerHandler);
         this.listenerHandler.loadAll();

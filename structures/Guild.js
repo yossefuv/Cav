@@ -35,6 +35,10 @@ Structures.extend('Guild', Guild => {
             return this.client.db.delete(this.id, key);
         }
 
+        updateLastUser(message) {
+            return this.lastUser = `${message.channel.id}.${message.author.id}`;
+        }
+
     }
 
     return GuildExt;

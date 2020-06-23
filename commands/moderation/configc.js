@@ -50,6 +50,7 @@ class ConfigCommand extends Command {
       '',
       `Type the name (bold) of these catagroies to view/change the settings ${s}`,
       '',
+      `${s} **Mod Role** **\`(view, change)\`**`,
       `${s} **status** **\`(view, change)\`**`,
       `${s} **Logging channel** **\`(view, change)\`**`,
       `${s} **Logged channels** **\`(view, change)\`**`,
@@ -77,14 +78,23 @@ if(!category) return;
 var categoryMessage = category.first();
 if (category) category = category.first().content.toLowerCase();
 
-const catagories = ['status', 'loggingchannel', 'loggedchannels', 'wordlogging'];
+const catagories = ['modrole' ,'status', 'loggingchannel', 'loggedchannels', 'wordlogging'];
 if (!catagories.includes(category.replace(/\s/g, ''))) return message.channel.send('You did not provide a valid category!');
 var index0 = catagories.indexOf(category.replace(/\s/g, ''));
 
 var getChannel = (ChannelID) => ChannelID ? message.guild.channels.cache.get(ChannelID) ? message.guild.channels.cache.get(ChannelID) : '\`Channel Deleted or Not found\`': `None`;
+var getRole = (roleID) => roleID ? message.guild.channels.cache.get(roleID) ? message.guild.channels.cache.get(roleID) : '\`Role Deleted or Not found\`': `None`;
+
 var currentChannels = message.guild.channels.cache.map(c => c.id);
 
 var catagoriesText = [
+
+    [
+        G,
+        `${s} Role: \`${getRole(settings.modRole)}\``,
+        '',
+        `Type The Role ID|Mention|Name to change the mod role`
+    ],
     [
         G,
         `${s} Status: \`${settings.messages.eanbled ? "Enabled":"Disabled"}\``,
@@ -134,6 +144,10 @@ if (!value) return;
 
 var valueFilter = [
     {
+        type: 'Role',
+        path: 'modRole'
+    },
+    {
         type: 'Boolean',
         path: 'messages.enabled',
     },
@@ -161,7 +175,7 @@ value = value.first();
      }
  }
  if (valueFilter.type === 'Channel') {
-    finalValue = (value.mentions.channels.first() || message.guild.channels.cache.get(value.content)) || undefined;
+    finalValue = (value.mentions.channels.first() || message.guild.channels.cache.get(value.content)  || message.guild.channels.cache.find(c => c.name === value.content)) || undefined;
  }
 
  if (valueFilter.type === 'ChannelArr') {
@@ -206,6 +220,10 @@ value = value.first();
       }
     }
 }
+
+ if (valueFilter.type === 'Role') {
+    finalValue = (value.mentions.roles.first() || message.guild.roles.cache.get(value.content) || message.guild.roles.cache.find(r => r.name === value.content)) || undefined; 
+ }
 
 if (!finalValue && typeof finalValue !== 'boolean') return message.channel.send('Invaild input');
 await this.client.db.set(message.guild.id, finalValue.id ? finalValue.id:finalValue, valueFilter.path)

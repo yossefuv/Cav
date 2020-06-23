@@ -26,7 +26,7 @@ module.exports = class MessageDeleteistener extends Listener {
           message.delete().catch(O_o => {});
         } else {
          let textTwoSend = await replaceMentions(message, message.content);
-        channel.send(`${message.channel} ${message.guild.lastUser || '' === `${message.channel.id}.${message.author.id}` ? '... :x:' : `\`${message.author.id}\` \`${message.member.nickname ? message.member.nickname:message.author.username}\`:x::`}  ${textTwoSend}${message.attachments.size !== 0 ? `${message.attachments.map(a => a.url).join('\n')}`: ''}`).then(async (msg) => {
+        channel.send(`${message.channel} ${(message.guild.lastUser || '') === `${message.channel.id}.${message.author.id}` ? '... :x:' : `\`${message.author.id}\` \`${message.member.nickname ? message.member.nickname:message.author.username}\`:x::`}  ${textTwoSend}${message.attachments.size !== 0 ? `${message.attachments.map(a => a.url).join('\n')}`: ''}`).then(async (msg) => {
          var buffer = message.guild.get('messages.buffer')
          var length = await buffer.push(msg.id);
          var global = this.client.db.get('global');

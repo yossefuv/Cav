@@ -41,7 +41,6 @@ class UserinfoCommand extends Command {
       , roles = tuser.roles.cache.array().slice(0,15).sort((a, b) => a.comparePositionTo(b)).reverse()
       , activeClients = Object.entries(tuser.presence.clientStatus || {}) 
       , postion = await getJoinPostion(message.guild, tuser.id);
-
     if (options === '--detailed') {
 
 
@@ -61,12 +60,12 @@ class UserinfoCommand extends Command {
             `${s} **Joined on**: \`${joinedOn}\` **[${daysJoined.toFixed(0)} days]**`,
             `${s} **Join position**: \`${postion}\``,
             `${s} **Current status**: \`${tuser.presence.status.capitalize()}\``,
-            `${tuser.presence.activities.length ? `**Current activities** ${s}\n${s} name: \`${tuser.presence.activities[0].name}\`\ntype: \`${tuser.presence.activities[0].type.toLowercase().capitalize()}\``: `${s} **Current activities**: \`None\``}`,
+            `${tuser.presence.activities.length ? `**Current activities** ${s}\n${s} name: \`${tuser.presence.activities[0].state}\`\n${s} type: \`${tuser.presence.activities[0].name}\``: `${s} **Current activities**: \`None\``}`,
             `${activeClients.length ? `**Current active clients** ${s}\n${activeClients.map(([type, status]) => `${type} ${s} \`${status}\``).join('\n')}` :`${s} **Current active clients**: \`None\``}`,
         ])
 
         .addField('**Roles**', roles.join('  ').length >= 1024 ? "Roles are too large" : roles.join('  '))
-        .setColor(roles[0].color == 0 ? roles[1].color == 0 ? 0x4dd0e1 : roles[1].color : roles[0].color));
+        .setColor(roles[0].name !== '@everyone' ? roles[0].color == 0 ? roles[1].color == 0 ? 0x4dd0e1 : roles[1].color : roles[0].color : 0x4dd0e1));
 
     } else {
     return msg.edit(new MessageEmbed()
@@ -81,7 +80,7 @@ class UserinfoCommand extends Command {
         ])
 
         .addField('**Roles**', roles.join('  ').length >= 1024 ? "Roles are too large" : roles.join('  '))
-        .setColor(roles[0].color == 0 ? roles[1].color == 0 ? 0x4dd0e1 : roles[1].color : roles[0].color));
+        .setColor(roles[0].name !== '@everyone' ? roles[0].color == 0 ? roles[1].color == 0 ? 0x4dd0e1 : roles[1].color : roles[0].color : 0x4dd0e1));
 
     }
  }

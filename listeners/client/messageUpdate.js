@@ -31,7 +31,8 @@ module.exports = class MessageUpdateListener extends Listener {
        message.edit(`${text.replace('\n','')}:pencil: ${textTwoSend} ${newMessage.attachments.size !== 0 ? `${newMessage.attachments.map(a => a.url).join('\n')}`: ''}`)
       } else {
       let textTwoSend = await replaceMentions(newMessage, newMessage.content);
-      channel.send(`${newMessage.channel} ${(newMessage.guild.lastUser || '') === `${newMessage.channel.id}.${newMessage.author.id}` ? '...' : `\`${newMessage.author.id}\` \`${newMessage.member.nickname ? newMessage.member.nickname:newMessage.author.username}\``} :pencil:: ${textTwoSend}${newMessage.attachments.size !== 0 ? `${newMessage.attachments.map(a => a.url).join('\n')}`: ''}`).then(async (msg) => {
+      channel.send(`${newMessage.channel} ${`\`${newMessage.author.id}\` \`${newMessage.member.nickname ? newMessage.member.nickname:newMessage.author.username}\``} :pencil:: ${textTwoSend}${newMessage.attachments.size !== 0 ? `${newMessage.attachments.map(a => a.url).join('\n')}`: ''}`).then(async (msg) => {
+         newMessage.guild.updateLastUser(newMessage, 'none');
          var buffer = this.client.db.get(newMessage.guild.id,'messages.buffer')
          var length = await buffer.push(msg.id);
          var global = this.client.db.get('global');

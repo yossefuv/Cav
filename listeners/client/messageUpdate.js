@@ -17,7 +17,8 @@ module.exports = class MessageUpdateListener extends Listener {
       if(settings.messages.enabled && settings.loggedChannels.includes(newMessage.channel.id) && newMessage.author !== this.client.user) {
        var active = await this.client.db.get('messageRecords');
        var channel = newMessage.guild.channels.cache.get(settings.channelToLog);
-  
+       if (!settings.loggedChannels.includes(newMessage.channel.id) && settings.channelToLog === newMessage.channel.id) return;
+
       if (active[newMessage.id]) {
          var message = newMessage.guild.channels.cache.get(settings.channelToLog).messages.cache.get(active[newMessage.id].loggedID);
          if (!message) return;
@@ -35,9 +36,8 @@ module.exports = class MessageUpdateListener extends Listener {
          newMessage.guild.updateLastUser(newMessage, 'none');
          var buffer = this.client.db.get(newMessage.guild.id,'messages.buffer')
          var length = await buffer.push(msg.id);
-         var global = this.client.db.get('global');
 
-         if (length > global.bufferLimit) {
+         if (length > this.client.global.bufferLimit) {
            var oldValue = await buffer.shift();
            var oldMsg = await channel.messages.cache.get(oldValue);
            if (!oldMsg) return;
@@ -51,17 +51,30 @@ module.exports = class MessageUpdateListener extends Listener {
    }
 }
 
+
 async function replaceMentions (message, text) {
 
-   var mentions = message.mentions.users;
-   if (mentions.size === 0) return text.replace(/(@everyone+)|(@here+)/gi, `\`everyone\``);
-   mentions.forEach(async (user) => {
+   // removes @everyone, @here
+   text = text.replace(/(@everyone+)|(@here+)/gi, `\`everyone\``);
+
+   var mentions = message.mentions;
+
+   // remove user metnions and replace them with 'NICKNAME ID'
+   if (mentions.users.size !== 0) { 
+   mentions.users.forEach(async (user) => {
        let nickname = message.guild.members.cache.get(user.id);
        nickname = nickname.nickname ? nickname.nickname : nickname.user.username;
        text = text.replace(/<\B@[!a-z0-9_-]+>/, `\`${nickname} ${user.id}\``);
        let regex = new RegExp(`(<@${user.id}+>)|(<@!${user.id}+>)`, 'g');
        text = text.replace(regex, `\`${nickname} ${user.id}\``);
    });
-   text = text.replace(/(@everyone+)|(@here+)/gi, `\`everyone\``)
+   }
+   // removes role mention
+   if (mentions.roles.size !== 0) { 
+          mentions.roles.forEach(async (role) => {
+       let regex = new RegExp(`(<@&${role.id}+>)`, 'g');
+       text = text.replace(regex, `\`@ ${role.name}\``);
+   });
+  }
  return text;
  }

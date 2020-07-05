@@ -36,10 +36,12 @@ class ReplyCommand extends Command {
         });
     }
 
-    async exec(message, { channel, text }) {
-       var { modRole } = await message.guild.get();
-       if (!(message.member.roles.cache.get(modRole) || message.member.permissions.has('MANAGE_GUILD'))) return message.channel.send('Invaild perms');
+    async userPermissions(message) {
+        var { modRole } = await message.guild.get();
+       if (!(message.member.roles.cache.get(modRole) || message.member.permissions.has('MANAGE_GUILD'))) return "Moderator";
+    }
 
+    async exec(message, { channel, text }) {
        if (!channel | !text) return message.channel.send('Invaild input');
        channel.send(`\`${message.member.nickname ? message.member.nickname:message.author.username}\`: ${text}`);
     }

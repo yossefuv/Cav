@@ -33,8 +33,7 @@ class ConfigCommand extends Command {
     }
 
     async exec(message, { option }) {
-        settings = message.guild.get();
-        
+        settings = await message.guild.get();
         const s = '[**»**](https://google.com/)';
         const G = [`Hello **${message.author.username}**, | Using version \`${version}\` of **${name}**`,
         `you can configure **${this.client.user.username}** to your liking,`,

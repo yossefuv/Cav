@@ -8,7 +8,13 @@ class EvalCommand extends Command {
         super('eval', {
             aliases: ['eval', 'ev'],
             category: 'admin',
-			description: { content: 'eval js code' },
+            description: { content: 'eval js code' },
+            args: [
+                {
+                   id: "code",
+                   type: "string"
+                }
+            ],
             ownerOnly: true
         });
     }
@@ -43,8 +49,7 @@ class EvalCommand extends Command {
         })
     }
 
-    async exec(message) {
-        const code = message.content.slice(this.client.commandHandler.prefix(message).length + 4).trim();
+    async exec(message, { code }) {
         try {
             const evaled = eval(code);
             const clean = await this.clean(this.client, evaled);

@@ -53,7 +53,7 @@ module.exports = class ReadyListener extends Listener {
 
         await this.client.db.set('messageRecords', {});
         this.client.global = global;
-
+/*
         setInterval(async () => {
             var y = {};
             var z = await	Object.entries(await this.client.db.get('messageRecords'));
@@ -66,7 +66,7 @@ module.exports = class ReadyListener extends Listener {
               });
               this.client.db.set('messageRecords', y);
           }, this.client.global['messageTimeout']*1000);
-
+*/
         await this.client.logger.log(`Successfully initialized databases.`);
 
 

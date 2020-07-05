@@ -4,7 +4,7 @@ const {
 
 const CBuffer = require('CBuffer');
 
-module.exports = class ReadyListener extends Listener {
+module.exports = class Logistener extends Listener {
     constructor() {
         super('log', {
             emitter: 'client',
@@ -15,14 +15,13 @@ module.exports = class ReadyListener extends Listener {
     exec(message) {
 
         if (!message.guild || message.author.bot) return;
-
         LogMsg(this.client, message)
 
     }
 }
 
 async function LogMsg(client, message) {
-    var settings = message.guild.get();
+    var settings = await message.guild.get();
 
     if (!settings.messages.enabled) return;
     
@@ -31,7 +30,7 @@ async function LogMsg(client, message) {
         
         //	let temp =// await commonRemover.remove(message.content.toLowerCase())
             let temp = await message.content.toLowerCase().replace(/[^\w\s]+/gi, '');
-             temp = await temp.replace(/(\b(\w{1,3})\b(\W|$))/gi, '');
+            temp = await temp.replace(/(\b(\w{1,3})\b(\W|$))/gi, '');
 
 		   const msgArr = temp.split(' ');
 			await msgArr.map(w => {
@@ -42,44 +41,69 @@ async function LogMsg(client, message) {
 			client.db.set(message.guild.id, (count += 1), 'messages.count');
     }
 
-	     if (settings.loggedChannels.includes(message.channel.id) && settings.channelToLog !== message.channel.id) {
-			const Cmd = message.content.slice(settings.prefix.length).trim().split(/ +/g).shift().toLowerCase();
-			const vaildCmd = client.commandHandler.modules.get(Cmd) || client.commandHandler.aliases.get(Cmd);
-            if (vaildCmd && message.member.permissions.has('ADMINISTRATOR')) return;
-            
-			if (!settings.channelToLog) return;
-            const channel = message.guild.channels.cache.get(settings.channelToLog);
-            var contentToSend = await replaceMentions(message, message.content);
-            
-			channel.send(`${message.channel} ${(message.guild.lastUser || '') === `${message.channel.id}.${message.author.id}` ? '...' : `\`${message.author.id}\` \`${message.member.nickname ? message.member.nickname:message.author.username}\`:`} ${contentToSend}${message.attachments.size !== 0 ? `${message.attachments.map(a => a.url).join('\n')}`: ''}`).then(async (msg) => {
-                message.guild.updateLastUser(message);
-                client.db.set('messageRecords', { timestap: new Date().getTime(), loggedID: msg.id }, message.id);
-                var buffer = message.guild.get('messages.buffer', new CBuffer(client.global.bufferLimit + 1))
-                var length = await buffer.push(msg.id);
 
-                if (length > client.global.bufferLimit) {
-                  var oldValue = await buffer.shift();
-                  var oldMsg = await channel.messages.cache.get(oldValue);
-                  if (!oldMsg) return;
-                  oldMsg.delete().catch(O_o => {});
-                }
-                client.db.set(message.guild.id, buffer, 'messages.buffer')
+    // checks if the channel is in the channels to log
+    if (settings.loggedChannels.includes(message.channel.id) && settings.channelToLog !== message.channel.id) {
 
-			});
+        // checks if the message was a vaild command made by an admin
+        const Cmd = message.content.slice(settings.prefix.length).trim().split(/ +/g).shift().toLowerCase();
+        const vaildCmd = client.commandHandler.modules.get(Cmd) || client.commandHandler.aliases.get(Cmd);
+        if (vaildCmd && message.member.permissions.has('ADMINISTRATOR')) return;
 
- }
+         // checks for the channel to log the message and gets the channel
+        if (!settings.channelToLog) return;
+        const channel = message.guild.channels.cache.get(settings.channelToLog);
+
+        // filters the message to remove mentions of users, roles
+        var contentToSend = await replaceMentions(message, message.content);
+        message.guild.record(message);
+        // sends the filtered message in the format '#CHANNEL USER: MESSAGE' OR '#CHANNEL ... MESSAGE'
+        channel.send(`${message.channel} ${(message.guild.lastUser || '') === `${message.channel.id}.${message.author.id}` ? '...' : `\`${message.author.id}\` \`${message.member.nickname ? message.member.nickname:message.author.username}\`:`} ${contentToSend}${message.attachments.size !== 0 ? `\n${message.attachments.map(a => a.url).join('\n')}`: ''}`).then(async (msg) => {
+            // adds the message to messageRecords;
+           message.guild.record(message, msg);
+           // check the buffer limit in the server
+            var buffer = await message.guild.get('messages.buffer', new CBuffer(client.global.bufferLimit + 1))
+            var length = await buffer.push(msg.id);
+
+            if (length > client.global.bufferLimit) {
+              var oldValue = await buffer.shift();
+              var oldMsg = await channel.messages.cache.get(oldValue);
+              if (!oldMsg) return;
+              oldMsg.delete().catch(O_o => {});
+            }
+            client.db.set(message.guild.id, buffer, 'messages.buffer')
+
+        });
+        message.guild.updateLastUser(message);
+
+
+        }
+
+ 
 }
 async function replaceMentions (message, text) {
 
-    var mentions = message.mentions.users;
-    if (mentions.size === 0) return text.replace(/(@everyone+)|(@here+)/gi, `\`everyone\``);
-    mentions.forEach(async (user) => {
+    // removes @everyone, @here
+    text = text.replace(/(@everyone+)|(@here+)/gi, `\`everyone\``);
+
+    var mentions = message.mentions;
+
+    // remove user metnions and replace them with 'NICKNAME ID'
+    if (mentions.users.size !== 0) { 
+    mentions.users.forEach(async (user) => {
         let nickname = message.guild.members.cache.get(user.id);
         nickname = nickname.nickname ? nickname.nickname : nickname.user.username;
         text = text.replace(/<\B@[!a-z0-9_-]+>/, `\`${nickname} ${user.id}\``);
         let regex = new RegExp(`(<@${user.id}+>)|(<@!${user.id}+>)`, 'g');
         text = text.replace(regex, `\`${nickname} ${user.id}\``);
     });
-    text = text.replace(/(@everyone+)|(@here+)/gi, `\`everyone\``)
+    }
+    // removes role mention
+    if (mentions.roles.size !== 0) { 
+           mentions.roles.forEach(async (role) => {
+        let regex = new RegExp(`(<@&${role.id}+>)`, 'g');
+        text = text.replace(regex, `\`@ ${role.name}\``);
+    });
+   }
   return text;
   }

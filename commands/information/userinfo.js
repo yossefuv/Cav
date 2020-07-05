@@ -17,20 +17,24 @@ class UserinfoCommand extends Command {
             args: [
 				{
                     id: 'tuser',
-                    type: 'member'
+                    type: 'member',
+                    default: (message) => {
+                        return message.member;
+                      },
                 },
                 {
-                    id: 'options',
-                    type: 'lowercase'
-                }            ],
+                    id: 'advanced',
+                    type: 'flag',
+                    flag: '--advanced'
+
+                },
+                ],
             channel: 'guild'
 
         });
     }
 
-    async exec(message, { tuser, options }) {
-    if (!tuser) tuser = message.member;
-
+    async exec(message, { tuser, advanced }) {
     var msg = await message.channel.send(new MessageEmbed()
       .setAuthor(`Fetching data on ${tuser.user.tag}`, tuser.user.displayAvatarURL({ dynamic: true }))
       .setFooter(`${this.client.user.username}`, this.client.user.displayAvatarURL())
@@ -41,7 +45,7 @@ class UserinfoCommand extends Command {
       , roles = tuser.roles.cache.array().slice(0,15).sort((a, b) => a.comparePositionTo(b)).reverse()
       , activeClients = Object.entries(tuser.presence.clientStatus || {}) 
       , postion = await getJoinPostion(message.guild, tuser.id);
-    if (options === '--detailed') {
+    if (advanced) {
 
 
         var millisCreated = new Date().getTime() - tuser.user.createdAt.getTime();
@@ -69,9 +73,9 @@ class UserinfoCommand extends Command {
 
     } else {
     return msg.edit(new MessageEmbed()
-        .setAuthor(`${tuser.user.tag} | Displays information on ${tuser.user.username}`, tuser.user.displayAvatarURL({ dynamic: true }))
+        .setAuthor(`${tuser.user.tag} | Displaying information on ${tuser.user.username}`, tuser.user.displayAvatarURL({ dynamic: true }))
         .setThumbnail(tuser.user.displayAvatarURL({ dynamic: true, size: 2048 }))
-        .setFooter(`${this.client.user.username} | Try and add the flag '--detailed' to see more info`, this.client.user.displayAvatarURL())
+        .setFooter(`${this.client.user.username} | Try and add the flag '--advanced' to see more info`, this.client.user.displayAvatarURL())
         .setDescription([
             `${s} **ID**: \`${tuser.user.id}\``,
             `${s} **Created on**: \`${createdOn}\``,

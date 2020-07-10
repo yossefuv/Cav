@@ -1,6 +1,6 @@
 {
   "name": "clog",
-  "version": "v2.7.3",
+  "version": "v2.7.5",
   "description": "cLog is bot to log all the messages sent in your server in one place.",
   "main": "index.js",
   "scripts": {
@@ -25,6 +25,8 @@
     "moment": "^2.27.0",
     "moment-duration-format": "^2.3.2",
     "node-fetch": "^2.6.0",
-    "path": "^0.12.7"
+    "path": "^0.12.7",
+    "sequelize": "^6.3.1",
+    "sqlite": "^4.0.11"
   }
 }

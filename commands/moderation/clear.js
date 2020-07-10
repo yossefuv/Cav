@@ -22,15 +22,11 @@ class ClearCommand extends Command {
                 {
                    id: "number",
                    type: (message, phrase) => {
-                    if (!phrase || isNaN(phrase)) return null;
+                    if (phrase.length === 0 || isNaN(phrase)) return null;
                     const num = parseInt(phrase);
-                    if (num < 1 || num > 100) return null;
+                    if (num < 1 || num > 500) return null;
                     return num;
                   },
-                    prompt: {
-                   retry: `Invaild number was given. type a number between 1-100`,
-                   }
-
                 }
             ],
         channel: 'guild'
@@ -44,9 +40,19 @@ class ClearCommand extends Command {
     }
 
     async exec(message, { number }) {
-        await message.channel.bulkDelete(number).then((m) => {
-            message.channel.send(`Cleared \`${m.size}\` messages`)       
-        });
+        if (!number) return message.channel.send("Invaild number was given. type a number between 1-500");
+        var i = number
+        , j = 0
+        , x = 0;
+         do {
+             if (i > 100) { x = 100 } else { x = i };
+            await message.channel.bulkDelete(x).then((m) => {
+                j += m.size
+                i -= 100;
+                if (i <= 10) message.channel.send(`Cleared \`${j}\` messages`);       
+            }).catch(() => { message.channel.send(`Cannot delete any more messages: **messages older than 2 weeks cannot be deleted**. Deleted ${j} messages`); return i = 9;});
+         }
+         while (i > 10);
     }
 }
 

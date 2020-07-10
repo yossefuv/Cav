@@ -1,6 +1,6 @@
 {
   "name": "clog",
-  "version": "v2.7.2",
+  "version": "v2.7.3",
   "description": "cLog is bot to log all the messages sent in your server in one place.",
   "main": "index.js",
   "scripts": {

@@ -10,7 +10,6 @@ module.exports = class MissingPermissionsListener extends Listener {
 	}
 
 	async exec(message, command, type, missing) {
-		console.log(missing)
 		const text = {
 			client: () => {
 				const str = this.missingPermissions(missing);
@@ -29,7 +28,8 @@ module.exports = class MissingPermissionsListener extends Listener {
 	}
 
 	missingPermissions(permissions) {
-		var missingPerms = Array(permissions).map(str => {
+		var x = Array.isArray(permissions) ? permissions : Array(permissions);
+		var missingPerms = x.map(str => {
 			switch (permissions) {
 				case 'Moderator': return `\`Moderator Role\``;
 				break;

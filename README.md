@@ -1,14 +1,14 @@
 **cLog**
 
-*v2.7.2*
+*v2.7.3*
 
-*** > change log: *** 
+**change log:**
 
 > added 'buffer' command to remove messages in logging channel
 
 > added 'clear' command to remove messages in the channel command ran in
 
-> spped improvements
+> speed improvements
 
 > bug fixes
 

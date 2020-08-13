@@ -9,7 +9,9 @@ const {
     defaultPrefix
 } = require('../config.js');
 const db = require('enmap');
+const fs = require("fs");
 const Utils = require('./utils.js');
+const onExit = require('async-exit-hook');
 
 require('../structures/Guild.js');
 require('../structures/GuildMember.js');
@@ -56,6 +58,8 @@ module.exports = class GuardianClient extends AkairoClient {
         this.commandHandler.loadAll();
         this.commandHandler.useListenerHandler(this.listenerHandler);
         this.listenerHandler.loadAll();
+ 
+
         return super.login(token);
     }
 

@@ -2,8 +2,6 @@ const {
     Listener
 } = require('discord-akairo');
 
-const CBuffer = require('CBuffer');
-
 module.exports = class Logistener extends Listener {
     constructor() {
         super('log', {
@@ -53,29 +51,11 @@ async function LogMsg(client, message) {
          // checks for the channel to log the message and gets the channel
         if (!settings.channelToLog) return;
         const channel = message.guild.channels.cache.get(settings.channelToLog);
-
         // filters the message to remove mentions of users, roles
         var contentToSend = await replaceMentions(message, message.content);
-        message.guild.record(message);
-        // sends the filtered message in the format '#CHANNEL USER: MESSAGE' OR '#CHANNEL ... MESSAGE'
-        channel.send(`${message.channel} ${(message.guild.lastUser || '') === `${message.channel.id}.${message.author.id}` ? '...' : `\`${message.author.id}\` \`${message.member.nickname ? message.member.nickname:message.author.username}\`:`} ${contentToSend}${message.attachments.size !== 0 ? `\n${message.attachments.map(a => a.url).join('\n')}`: ''}`).then(async (msg) => {
-            // adds the message to messageRecords;
-           message.guild.record(message, msg);
-           // check the buffer limit in the server
-            var buffer = await message.guild.get('messages.buffer', new CBuffer(client.global.bufferLimit + 1))
-            var length = await buffer.push(msg.id);
+      await message.guild.log(message, `${message.channel} ${(message.guild.lastUser || '') === `${message.channel.id}.${message.author.id}` ? '...' : `\`${message.author.id}\` \`${message.member.nickname ? message.member.nickname:message.author.username}\`:`} ${contentToSend}${message.attachments.size !== 0 ? `\n${message.attachments.map(a => a.url).join('\n')}`: ''}`, channel);
 
-            if (length > client.global.bufferLimit) {
-              var oldValue = await buffer.shift();
-              var oldMsg = await channel.messages.cache.get(oldValue);
-              if (!oldMsg) return;
-              oldMsg.delete().catch(O_o => {});
-            }
-            client.db.set(message.guild.id, buffer, 'messages.buffer')
-
-        });
-        message.guild.updateLastUser(message);
-
+            message.guild.updateLastUser(message);
 
         }
 
@@ -85,15 +65,14 @@ async function replaceMentions (message, text) {
 
     // removes @everyone, @here
     text = text.replace(/(@everyone+)|(@here+)/gi, `\`everyone\``);
-
+ 
     var mentions = message.mentions;
-
+ 
     // remove user metnions and replace them with 'NICKNAME ID'
     if (mentions.users.size !== 0) { 
     mentions.users.forEach(async (user) => {
         let nickname = message.guild.members.cache.get(user.id);
         nickname = nickname.nickname ? nickname.nickname : nickname.user.username;
-        text = text.replace(/<\B@[!a-z0-9_-]+>/, `\`${nickname} ${user.id}\``);
         let regex = new RegExp(`(<@${user.id}+>)|(<@!${user.id}+>)`, 'g');
         text = text.replace(regex, `\`${nickname} ${user.id}\``);
     });

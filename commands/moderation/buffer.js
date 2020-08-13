@@ -78,9 +78,9 @@ class BufferCommand extends Command {
         const initial = new MessageEmbed()
         .setDescription([
             `Hello **${message.author.username}**, | Using version \`${version}\` of **${name}**`,
-            `${s} global buffer size: \`${this.client.global.bufferLimit}\``,
+            `${s} buffer size limit: \`${settings.messages.bufferLimit}\``,
             `${s} current buffer size: \`${buffer.length}\``,
-            `${s} current buffer status: \`${this.client.global.bufferLimit <= buffer.length ? 'Deleting oldest message when a new message is sent':'Noting'}\``,
+            `${s} current buffer status: \`${settings.messages.bufferLimit <= buffer.length ? 'Deleting oldest message when a new message is sent':'Noting'}\``,
             '',
             `Type the number of messages you want delete(deletes from oldest) or 'all' to delete all messages`
         ])

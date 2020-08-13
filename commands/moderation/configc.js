@@ -1,17 +1,7 @@
-const {
-    Command
-} = require('discord-akairo');
-
-const {
-     MessageEmbed
- } = require('discord.js');
- 
- const {
-      version,
-       name
- } = require('../../package.json');
-
- var settings;
+const { Command } = require('discord-akairo');
+const { MessageEmbed } = require('discord.js');
+const { version, name} = require('../../package.json');
+var settings;
 
 class ConfigCommand extends Command {
     constructor() {
@@ -53,6 +43,8 @@ class ConfigCommand extends Command {
       `${s} **status** **\`(view, change)\`**`,
       `${s} **Logging channel** **\`(view, change)\`**`,
       `${s} **Logged channels** **\`(view, change)\`**`,
+      `${s} **Message lifetime** **\`(view, change)\`**`,
+      `${s} **Buffer limit** **\`(view, change)\`**`,
       `${s} **Word Logging** **\`(view, change)\`**`,
 
       '',
@@ -77,7 +69,7 @@ if(!category) return;
 var categoryMessage = category.first();
 if (category) category = category.first().content.toLowerCase();
 
-const catagories = ['modrole' ,'status', 'loggingchannel', 'loggedchannels', 'wordlogging'];
+const catagories = ['modrole' ,'status', 'loggingchannel', 'loggedchannels', 'messagelifetime', 'bufferlimit', 'wordlogging'];
 if (!catagories.includes(category.replace(/\s/g, ''))) return message.channel.send('You did not provide a valid category!');
 var index0 = catagories.indexOf(category.replace(/\s/g, ''));
 
@@ -88,25 +80,25 @@ var currentChannels = message.guild.channels.cache.map(c => c.id);
 
 var catagoriesText = [
 
-    [
+    [ /* modrole */
         G,
         `${s} Role: \`${getRole(settings.modRole)}\``,
         '',
         `Type The Role ID|Mention|Name to change the mod role`
     ],
-    [
+    [ /* status */
         G,
         `${s} Status: \`${settings.messages.eanbled ? "Enabled":"Disabled"}\``,
         '',
         `Type \`enable\` if you wish to enable, \`disable\` to disable`
     ],
-    [
+    [ /* logging channel */
         G,
         `${s} channel: ${getChannel(settings.channelToLog)}`,
         '',
         `Type the new channel to change it`
     ],
-    [
+    [ /* logged chaneels */
         G,
         `${s} ${
             settings.loggedChannels === currentChannels.filter(c => c !== settings.channelToLog)
@@ -117,7 +109,24 @@ var catagoriesText = [
         `Type in \`all\` to add all channels and \`remove\` to remove a channel`
 
     ],
-    [
+
+    [/* message lifetime */
+    G,
+    `${s} Current message lifetime (in minutes): \`${settings.messages.lifetime}\``,
+    'Type the new message lifetime that would be used (IN minutes)',
+    `valid numbers range **from ${this.client.global.limits.messageLifetime.map(l => l).join(' to ')}**`,
+    `* by changing this value the existing messages saved in the buffer will be removed`
+
+    ],
+    [/* buffer limt */
+    G,
+    `${s} Current buffer limit size: \`${settings.messages.bufferLimit}\``,
+    'Type the new buffer limit that would be used ',
+    `valid numbers range **from ${this.client.global.limits.bufferlimit.map(l => l).join(' to ')}**`,
+    `* by changing this value the existing messages saved in the buffer will be removed`
+    ],
+
+    [/* word logging */
         G,
         `${s} Status: \`${settings.messages.wordLogging ? "Enabled":"Disabled"}\``,
         '',
@@ -142,23 +151,35 @@ var catagoriesText = [
 if (!value) return;
 
 var valueFilter = [
-    {
+    { /* mod role */
         type: 'Role',
         path: 'modRole'
     },
-    {
+    { /* status */
         type: 'Boolean',
         path: 'messages.enabled',
     },
-    {
+    { /* logging channel */
         type: 'Channel',
         path: 'channelToLog',
     },
-    {
+    { /* logged channels */
         type: 'ChannelArr',
         path: 'loggedChannels',
     },
-    {
+    {/* message lifetime */
+    type: 'Number',
+    path: 'messages.lifetime',
+    limitRange: this.client.global.limits.messageLifetime,
+    afterChecks: (n) => message.guild.changeMessageLifetime(n)
+    },
+    {/* buffer limit */
+    type: 'Number',
+    path: 'messages.bufferLimit',
+    limitRange: this.client.global.limits.bufferlimit,
+    afterChecks: (n) => message.guild.changeBufferLimit(n)
+    },
+    { /* word logging */
         type: 'Boolean',
         path: 'messages.wordLogging',
     }
@@ -222,6 +243,25 @@ value = value.first();
 
  if (valueFilter.type === 'Role') {
     finalValue = (value.mentions.roles.first() || message.guild.roles.cache.get(value.content) || message.guild.roles.cache.find(r => r.name === value.content)) || undefined; 
+ }
+
+
+ if (valueFilter.type === 'Number') {
+     if (isNaN(value.content)) {
+     finalValue = undefined;
+     } else {
+     var number = Math.round((Number(value.content) + Number.EPSILON) * 100) / 100;
+     if (valueFilter.limitRange && Array.isArray(valueFilter.limitRange)) {
+
+        if (number > valueFilter.limitRange[0] && number < valueFilter.limitRange[1]) {
+            finalValue = number;
+        if (valueFilter.afterChecks) valueFilter.afterChecks(number);
+        } else finalValue = undefined;
+     } else {
+        finalValue = number;
+        if (valueFilter.afterChecks) valueFilter.afterChecks(number);
+     }
+    }
  }
 
 if (!finalValue && typeof finalValue !== 'boolean') return message.channel.send('Invaild input');

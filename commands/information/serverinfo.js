@@ -20,7 +20,7 @@ class ServerinfoCommand extends Command {
         const s = '[**»**](https://google.com/)';
         const { usedWords, count, wordLogging } = message.guild.get('messages');
         const usedWordsSort = [];
-        Object.entries(usedWords).map(([key, value]) => usedWordsSort.push([key, value]));
+        Object.entries(usedWords || {}).map(([key, value]) => usedWordsSort.push([key, value]));
         usedWordsSort.sort(function (a, b) {
             return b[1] - a[1];
         });

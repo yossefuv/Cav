@@ -11,44 +11,68 @@ module.exports = class MessageDeleteistener extends Listener {
    }
 
    async exec(message) {
+      // return if the user is a bot
       if (message.author.bot) return;
-      this.message = message;
-     setTimeout(async () => {
-      var settings = this.client.db.get(this.message.guild.id);
-      if(settings.messages.enabled && settings.loggedChannels.includes(this.message.channel.id) && this.message.author !== this.client.user) {
-         var active =  this.message.guild.messageRecords[this.message.id] ? this.message.guild.messageRecords[this.message.id]:false;
-         var channel = await this.message.guild.channels.cache.get(settings.channelToLog);
+      var d = new Date().getTime();    
+
+      // Save guilds settings in variable settings
+      var settings = this.client.db.get(message.guild.id);
+
+      // Check if logging is enabled and if the message edited is in the list of logged channels (fail check if message was channel to log messages)
+      if(settings.messages.enabled && settings.loggedChannels.includes(message.channel.id)  && settings.channelToLog !== message.channel.id) {
+
+         // gets the saved message object from the list otherwise return false | get the channel where messages are being logged at
+         var active =  message.guild.messageRecordsStatus ? message.guild.messageRecords[message.id] ? message.guild.messageRecords[message.id]: false: false;
+         var channel = await message.guild.channels.cache.get(settings.channelToLog);
          if (!channel) return;
-         var x = await channel.messages.fetch({ limit: 1 });
-         if (!active.loggedID) {
-            var y = await replaceMentions(this.message, this.message.content)
-            , z = x.first().content.includes(y);
-            z === y ? active.loggedID = x.first().id:null 
+          
+         if (!active && (d - message.createdTimestamp < 2500)) {
+            var x = await channel.messages.fetch({ limit: 1 });
+            var y = await replaceMentions(message, message.content);
+            var z = kmpSearch(message.content,x.first().content);
+            var zz = kmpSearch(message.member.nickname ? message.member.nickname:message.author.username, x.first().content)
+            if (z != -1 || zz != -1) {
+               message.guild.updateLastUser(message, 'none');
+             return x.first().delete().catch(O_o => {});
             }
+         }
+
         if (active) {
-           var message = this.message.guild.channels.cache.get(settings.channelToLog).messages.cache.get(active.loggedID);
+
+           // gets the message stored in the logging channel
+           var message = message.guild.channels.cache.get(settings.channelToLog).messages.cache.get(active.loggedID);
            if (!message) return;
-          message.delete().catch(O_o => {});
+
+           // try to delete the message from logging channel
+            message.delete().catch(O_o => {});
+
         } else {
-         let textTwoSend = await replaceMentions(this.message, this.message.content);
-        channel.send(`${this.message.channel} ${`\`${this.message.author.id}\` \`${this.message.member.nickname ? this.message.member.nickname:this.message.author.username}\`:x::`}  ${textTwoSend}${this.message.attachments.size !== 0 ? `${this.message.attachments.map(a => a.url).join('\n')}`: ''}`).then(async (msg) => {
-         this.message.guild.updateLastUser(this.message, 'none');
-         var buffer = this.message.guild.get('messages.buffer')
+
+         // filter the message from mentions of users, roles and everyone and sends it 
+         let textTwoSend = await replaceMentions(message, message.content);
+
+        channel.send(`${message.channel} ${`\`${message.author.id}\` \`${message.member.nickname ? message.member.nickname:message.author.username}\`:x::`}  ${textTwoSend}${message.attachments.size !== 0 ? `${message.attachments.map(a => a.url).join('\n')}`: ''}`).then(async (msg) => {
+         
+         // update the last user
+         message.guild.updateLastUser(message, 'none');
+
+        // push to the buffer and remove old messages
+         var buffer = await message.guild.get('messages.buffer')
          var length = await buffer.push(msg.id);
 
-         if (length > this.client.global.bufferLimit) {
+         if (length > settings.messages.bufferLimit) {
            var oldValue = await buffer.shift();
            var oldMsg = await channel.messages.cache.get(oldValue);
            if (!oldMsg) return;
            oldMsg.delete().catch(O_o => {});
          }
-         this.client.db.set(this.message.guild.id, buffer, 'messages.buffer')
+         this.client.db.set(message.guild.id, buffer, 'messages.buffer')
 
-        })
+        });
         }
-        }  
-      }, 250)
+      }
    }
+
 }
 
 async function replaceMentions (message, text) {
@@ -63,7 +87,6 @@ async function replaceMentions (message, text) {
    mentions.users.forEach(async (user) => {
        let nickname = message.guild.members.cache.get(user.id);
        nickname = nickname.nickname ? nickname.nickname : nickname.user.username;
-       text = text.replace(/<\B@[!a-z0-9_-]+>/, `\`${nickname} ${user.id}\``);
        let regex = new RegExp(`(<@${user.id}+>)|(<@!${user.id}+>)`, 'g');
        text = text.replace(regex, `\`${nickname} ${user.id}\``);
    });
@@ -76,4 +99,32 @@ async function replaceMentions (message, text) {
    });
   }
  return text;
+ }
+ function kmpSearch(pattern, text) {
+   if (pattern.length == 0)
+     return 0; // Immediate match
+ 
+   // Compute longest suffix-prefix table
+   var lsp = [0]; // Base case
+   for (var i = 1; i < pattern.length; i++) {
+     var j = lsp[i - 1]; // Start by assuming we're extending the previous LSP
+     while (j > 0 && pattern.charAt(i) != pattern.charAt(j))
+       j = lsp[j - 1];
+     if (pattern.charAt(i) == pattern.charAt(j))
+       j++;
+     lsp.push(j);
+   }
+ 
+   // Walk through text string
+   var j = 0; // Number of chars matched in pattern
+   for (var i = 0; i < text.length; i++) {
+     while (j > 0 && text.charAt(i) != pattern.charAt(j))
+       j = lsp[j - 1]; // Fall back in the pattern
+     if (text.charAt(i) == pattern.charAt(j)) {
+       j++; // Next char matched, increment position
+       if (j == pattern.length)
+         return i - (j - 1);
+     }
+   }
+   return -1; // Not found
  }

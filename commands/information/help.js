@@ -37,13 +37,14 @@ class HelpCommand extends Command {
     }
 
     async exec(message, { option }) {
-        settings = message.guild ? message.guild.get() : { prefix }
+        settings = message.guild ? await message.guild.get() : { prefix }
+
         const s = '[**»**](https://google.com/)';
 
      if (option) {
       if (this.client.commandHandler.categories.get(option)) {
           var category = this.client.commandHandler.categories.get(option);
-          if (category.id === 'admin' && ownerID !== message.author.id) return message.channel.send(`You need to be the bot developer to view this category`)
+          if (category.id === 'admin' && ownerID !== message.author.id) return;
 
         let embed = new MessageEmbed()
         .setDescription([
@@ -61,7 +62,7 @@ class HelpCommand extends Command {
       }
       if (this.client.commandHandler.modules.get(option) || this.client.commandHandler.aliases.get(option)) {
         var command = this.client.commandHandler.modules.get(option) || this.client.commandHandler.modules.get(this.client.commandHandler.aliases.get(option));
-        if (command.ownerOnly && ownerID !== message.author.id) return message.channel.send(`You need to be the bot developer to view this command`)
+        if (command.ownerOnly && ownerID !== message.author.id) return;
         let embed = new MessageEmbed()
         .setDescription([
             `View help information for ${this.client.user}`,

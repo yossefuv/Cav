@@ -4,11 +4,11 @@
 
 **change log:**
 
-> added 'buffer' command to remove messages in logging channel
+> customizable bufferlimit and message lifetime
 
-> added 'clear' command to remove messages in the channel command ran in
+> fixes
 
-> speed improvements
+> improvements
 
-> bug fixes
+> removed unused code
 

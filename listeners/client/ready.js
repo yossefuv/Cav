@@ -1,11 +1,6 @@
 const { Listener } = require('discord-akairo');
-
 const config = require('../../config.js');
-const CBuffer = require('CBuffer');
-
 const { version, name } = require('../../package.json');
-
-
 
 module.exports = class ReadyListener extends Listener {
     constructor() {

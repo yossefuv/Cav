@@ -1,17 +1,9 @@
 const path = require('path');
-const {
-    AkairoClient,
-    CommandHandler,
-    ListenerHandler
-} = require('discord-akairo');
-const {
-    ownerID,
-    defaultPrefix
-} = require('../config.js');
+const { AkairoClient, CommandHandler, ListenerHandler } = require('discord-akairo');
+const { ownerID, defaultPrefix } = require('../config.js');
 const db = require('enmap');
 const fs = require("fs");
 const Utils = require('./utils.js');
-const onExit = require('async-exit-hook');
 
 require('../structures/Guild.js');
 require('../structures/GuildMember.js');

@@ -25,7 +25,7 @@ module.exports = class MessageDeleteistener extends Listener {
          var active =  message.guild.messageRecordsStatus ? message.guild.messageRecords[message.id] ? message.guild.messageRecords[message.id]: false: false;
          var channel = await message.guild.channels.cache.get(settings.channelToLog);
          if (!channel) return;
-          
+
          if (!active && (d - message.createdTimestamp < 2500)) {
             var x = await channel.messages.fetch({ limit: 1 });
             var y = await replaceMentions(message, message.content);

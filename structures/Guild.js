@@ -53,21 +53,21 @@ Structures.extend('Guild', Guild => {
             return this.lastUser = `${message.channel.id}.${message.author.id}`;
         }
 
-        messageRecordsCheck() {
+       async messageRecordsCheck() {
             if (this.messageRecordsStatus) return;
-            var { lifetime } = this.get('messages');
+            var { lifetime } = await this.get('messages');
              this.messageRecordsInterval = setInterval(async () => {
                     var y = {};
                     var z = await Object.entries(this.messageRecords);
                    if (!z.length) return;
                     var x = z.filter(([key, value]) => {
-                      return (new Date().getTime() - value.timestap) <= lifetime*6e4; 
+                      return (new Date().getTime() - value.timestap) <= lifetime * 6e4; 
                      });
                       x.map(([key, value]) => {
                           y[key] = value;
                       });
                       this.messageRecords = y;
-                  }, lifetime*6e4);
+                  }, lifetime * 6e4);
                   this.messageRecordsStatus = true;
         }
         updateRecords(message, msg) {
@@ -78,7 +78,7 @@ Structures.extend('Guild', Guild => {
 
         async record(message, msg) {
             await this.updateRecords(message, msg);
-            this.messageRecordsCheck();
+            await this.messageRecordsCheck();
         }
 
         async log(message, text, channel) {

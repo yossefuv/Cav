@@ -1,6 +1,6 @@
 {
-  "name": "Cav",
-  "version": "v3.0.1",
+  "name": "cav",
+  "version": "v3.0.2",
   "description": "Cav is bot to log all the messages sent in your server in one place.",
   "main": "index.js",
   "scripts": {

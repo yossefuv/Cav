@@ -36,6 +36,10 @@ module.exports = class MessageUpdateListener extends Listener {
 
        message.edit(`${FirstPart}:pencil: ${secondPart} ${newMessage.attachments.size !== 0 ? `${newMessage.attachments.map(a => a.url).join('\n')}`: ''}`)
       } else {
+      var firstOne = oldMessage.content.split(" ")[0];
+      var cmd = firstOne.replace(settings.prefix, '')
+      const check = this.client.commandHandler.modules.get(cmd) || this.client.commandHandler.aliases.get(cmd);
+      if (check) return;
 
       // filter the message from mentions of users, roles and everyone and sends it 
       var textTwoSend = await replaceMentions(newMessage, newMessage.content);

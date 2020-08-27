@@ -1,7 +1,7 @@
 {
-  "name": "clog",
+  "name": "cav",
   "version": "v3.0.1",
-  "description": "cLog is bot to log all the messages sent in your server in one place.",
+  "description": "cav is bot to log all the messages sent in your server in one place.",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
@@ -9,11 +9,11 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/xYossaf/cLog.git"
+    "url": "git+https://github.com/xYossaf/cav.git"
   },
   "author": "xYossaf",
   "license": "MIT",
-  "homepage": "https://github.com/xYossaf/cLog",
+  "homepage": "https://github.com/xYossaf/cav",
   "dependencies": {
     "CBuffer": "^2.1.0",
     "better-sqlite3": "^7.1.0",

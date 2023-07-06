@@ -1,32 +1,22 @@
 {
-  "name": "cav",
-  "version": "v3.0.2",
-  "description": "Cav is bot to log all the messages sent in your server in one place.",
+  "name": "simple_discord_bot_ts",
+  "version": "0.0.1",
+  "description": "simple discord bot i made to get used to typescript",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node index.js"
+    "build": "tsc",
+    "brun": "tsc && node dist/index.js"
   },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/xYossaf/Cav.git"
-  },
-  "author": "xYossaf",
-  "license": "MIT",
-  "homepage": "https://github.com/xYossaf/Cav",
+  "author": "",
+  "license": "ISC",
   "dependencies": {
-    "CBuffer": "^2.1.0",
-    "better-sqlite3": "^7.1.0",
-    "chalk": "^4.1.0",
-    "discord-akairo": "^8.0.0",
-    "discord.js": "^12.0.2",
-    "dotenv": "^8.2.0",
-    "enmap": "^5.3.1",
-    "moment": "^2.27.0",
-    "moment-duration-format": "^2.3.2",
-    "node-fetch": "^2.6.0",
-    "path": "^0.12.7",
-    "sequelize": "^6.3.1",
-    "sqlite": "^4.0.11"
+    "@discordjs/rest": "^1.7.1",
+    "@types/node": "^20.2.6",
+    "discord-api-types": "^0.37.43",
+    "discord.js": "^14.11.0",
+    "dotenv": "^16.1.4",
+    "ts-node": "^10.9.1",
+    "typescript": "^5.1.3"
   }
 }

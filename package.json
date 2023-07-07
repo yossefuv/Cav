@@ -1,6 +1,6 @@
 {
   "name": "cav",
-  "version": "3.1.0",
+  "version": "v3.2.2",
   "description": "Cav is bot to log all the messages sent in your server in one place.",
   "main": "index.js",
   "scripts": {
@@ -18,9 +18,11 @@
   "dependencies": {
     "@discordjs/rest": "^1.7.1",
     "@types/node": "^20.2.6",
+    "CBuffer": "^2.2.0",
     "discord-api-types": "^0.37.43",
     "discord.js": "^14.11.0",
     "dotenv": "^16.1.4",
+    "enmap": "^5.9.8",
     "moment": "^2.29.4",
     "moment-duration-format": "^2.3.2",
     "ts-node": "^10.9.1",

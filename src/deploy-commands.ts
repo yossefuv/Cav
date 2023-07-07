@@ -42,4 +42,6 @@ const rest = new REST().setToken(process.env.TOKEN);
         )
       )
       .catch(console.error);
+
+
 }

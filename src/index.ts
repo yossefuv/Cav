@@ -46,6 +46,7 @@ const user: User = {
 
 import fs from 'node:fs';
 import path from 'node:path';
+import db from 'enmap';
 import { Client, Collection, GatewayIntentBits } from "discord.js";
 import dotenv from "dotenv";
 dotenv.config(); 
@@ -53,12 +54,17 @@ dotenv.config();
 console.log("Bot is starting...");
 
 const client: cClient = new Client({
-    intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildMembers],
+    intents: [GatewayIntentBits.Guilds,
+		 GatewayIntentBits.GuildMembers,
+		 GatewayIntentBits.MessageContent,
+		 GatewayIntentBits.GuildMessages],
 });
 
 
 client.commands = new Collection();
 client.cooldowns = new Collection();
+client.db = new db({name: "maindb"});
+client.config = require("./config");
 
 const foldersPath = path.join(__dirname, 'commands');
 const commandFolders = fs.readdirSync(foldersPath);

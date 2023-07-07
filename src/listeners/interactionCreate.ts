@@ -5,8 +5,6 @@ module.exports = {
 	name: Events.InteractionCreate,
 	async execute(client: cClient, interaction: ChatInputCommandInteraction) {
 		if (!interaction.isChatInputCommand()) return;
-		//console.log("RAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA\n\n")
-		//console.log(interaction)
 	 	const command = client.commands.get(interaction.commandName);
 		if (interaction.isCommand()) {
 		if (!command) {

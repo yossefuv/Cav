@@ -23,7 +23,7 @@ module.exports = {
               
             ].join('\n')
         )
-
+        
 		await interaction.reply({embeds: [embed]});
 	},
 };

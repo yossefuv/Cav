@@ -16,12 +16,10 @@ module.exports = {
 
 async function LogMsg(client: cClient,guild: cGuild, message: Message) {
     var settings = await dget(client, guild);
-    console.log(settings)
     if (!settings.messages.enabled) return;
     
     if (settings.messages.wordLogging) {
 		let { usedWords, count } = settings.messages;
-        
         //	let temp =// await commonRemover.remove(message.content.toLowerCase())
             let temp = await message.content.toLowerCase().replace(/[^\w\s]+/gi, '');
             temp = await temp.replace(/(\b(\w{1,3})\b(\W|$))/gi, '');
@@ -31,6 +29,7 @@ async function LogMsg(client: cClient,guild: cGuild, message: Message) {
                 if(w == '') return;
 				usedWords[w] ? (usedWords[w] += 1) : (usedWords[w] = 1);
 			});
+
 			client.db.set(message.guild.id, usedWords, 'messages.usedWords');
 			client.db.set(message.guild.id, (count += 1), 'messages.count');
     }

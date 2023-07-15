@@ -1,7 +1,7 @@
 {
   "name": "cav",
-  "version": "v3.2.2",
-  "description": "Cav is bot to log all the messages sent in your server in one place.",
+  "version": "v3.3.3",
+  "description": "Cav is bot to log all the messages across your server in one place.",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
@@ -25,7 +25,6 @@
     "enmap": "^5.9.8",
     "moment": "^2.29.4",
     "moment-duration-format": "^2.3.2",
-    "ts-node": "^10.9.1",
     "typescript": "^5.1.3"
   }
 }

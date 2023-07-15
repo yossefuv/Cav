@@ -6,6 +6,9 @@ export async function dget(client: cClient, guild: cGuild, key?: string, fallbac
         await client.db.set(guild.id, {
              messages: {
                  enabled: false,
+                 deletedLog: true,
+                 editedLog: true,
+                 infiniteLog: false,
                  lifetime:  client.config.defaultMessageLifetime,
                  bufferLimit:  client.config.defaultBufferLimit,
                  wordLogging: false,
@@ -30,7 +33,7 @@ export function ddelete(client: cClient, guild: cGuild, key: string) {
     return client.db.delete(guild.id, key);
 }
 
-export function updateLastUser(client: cClient, guild: cGuild, message: Message, custom?: boolean) {
+export function updateLastUser(client: cClient, guild: cGuild, message: Message, custom?: any) {
     if (custom) return guild.lastUser = custom;
     return guild.lastUser = `${message.channel.id}.${message.author.id}`;
 } 
@@ -67,7 +70,6 @@ export async function record(client: cClient, guild: cGuild, message: Message, m
 export async function log(client: cClient, guild: cGuild, message: Message, text: string, channel: TextChannel) {
 
     var settings = await dget(client, guild);
-    console.log(channel)
     // sends the filtered message in the format '#CHANNEL USER: MESSAGE' OR '#CHANNEL ... MESSAGE'
     channel.send(text).then(async (msg) => {
     record(client, guild, message, msg);

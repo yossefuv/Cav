@@ -1,49 +1,3 @@
-/* /* console.log(Math.floor(10.5));
-
-let namse: string = "Elzero";
-let numberc: number = 5;
-let bols: boolean = true;
-
-let obk: object = {};
-let obka = ["aw","wa"]; */
-/*
-@name acc:
-*//*
-let acc = (_owka: any, lwad?: any ,wad?: any): string => {
-return "a";
-}
-acc("s")
-
-interface User {
-    id: number,
-    hired: boolean,
-    name: string,
-    country: string,
-}
-//@ts-ignore
-class myUser implements User {
-    id: number;
-    hired: boolean;
-    name: string;
-    country: string;
-    
-    constructor (id: number, hired: boolean, name: string, country: string) {
-        this.id = id;
-        this.hired = hired;
-        this.name = name;
-        this.country = country;
-    }
-
-
-}
-
-const user: User = {
-    id: 6156,
-    hired: false,
-    name: "mah",
-    country: "eg"
-} */
-
 import fs from 'node:fs';
 import path from 'node:path';
 import db from 'enmap';
@@ -57,7 +11,9 @@ const client: cClient = new Client({
     intents: [GatewayIntentBits.Guilds,
 		 GatewayIntentBits.GuildMembers,
 		 GatewayIntentBits.MessageContent,
-		 GatewayIntentBits.GuildMessages],
+		 GatewayIntentBits.GuildMessages,
+		 GatewayIntentBits.GuildPresences,
+		 ],
 });
 
 
@@ -101,29 +57,4 @@ for (const file of eventFiles) {
 		client.on(event.name, (...args: any) => event.execute(client,...args));
 	}
 }
-
-
-/* 
-client.on(Events.InteractionCreate, async interaction => {
-	if (!interaction.isChatInputCommand()) return;
-
-	const command = interaction.client.commands.get(interaction.commandName);
-
-	if (!command) {
-		console.error(`No command matching ${interaction.commandName} was found.`);
-		return;
-	}
-
-	try {
-		await command.execute(interaction);
-	} catch (error) {
-		console.error(error);
-		if (interaction.replied || interaction.deferred) {
-			await interaction.followUp({ content: 'There was an error while executing this command!', ephemeral: true });
-		} else {
-			await interaction.reply({ content: 'There was an error while executing this command!', ephemeral: true });
-		}
-	} 
-}); */
-
 client.login(process.env.TOKEN);

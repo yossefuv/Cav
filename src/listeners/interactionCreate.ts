@@ -1,5 +1,6 @@
 import type {ChatInputCommandInteraction } from 'discord.js';
-import {Collection,Events} from 'discord.js';
+import {Collection,Events, PermissionFlagsBits} from 'discord.js';
+import { dget } from '../utils/db';
 
 module.exports = {
 	name: Events.InteractionCreate,
@@ -33,6 +34,8 @@ module.exports = {
 	timestamps.set(interaction.user.id, now);
 	setTimeout(() => timestamps.delete(interaction.user.id), cooldownAmount);
 		try {
+			let isva =  await isValidUser(client, interaction, command);
+			if (!isva && command.defaultMemberPermissions !== PermissionFlagsBits.SendMessages) return await interaction.reply({content: "Sorry you cannot use this command", ephemeral: true});
 			await command.execute(client, interaction);
 		} catch (error) {
 			console.error(`Error executing ${interaction.commandName}`);
@@ -42,3 +45,8 @@ module.exports = {
 	},
 };
 
+const isValidUser =  async (client: cClient, interaction: ChatInputCommandInteraction, command: object): Promise<boolean> => {
+ 	const modRole = await dget(client, interaction.guild, "modRole")
+	//@ts-ignore
+	return interaction.member.roles.cache.some(role => role.id === modRole) || interaction.member.permissions.has(command.defaultMemberPermissions);
+}

@@ -1,8 +1,9 @@
-import { CommandInteraction, EmbedBuilder, SlashCommandBuilder } from 'discord.js';
+import { CommandInteraction, EmbedBuilder, PermissionFlagsBits, SlashCommandBuilder } from 'discord.js';
 
 module.exports = {
 	cooldown: 5,
 	category: "information",
+    defaultMemberPermissions: PermissionFlagsBits.SendMessages,
 	data: new SlashCommandBuilder()
 		.setName('serverinfo')
 		.setDescription('Provides information about the server.')

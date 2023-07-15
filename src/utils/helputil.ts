@@ -43,7 +43,7 @@ import { bothelpu } from "./botinfoutil";
         } else {
             bothelpu(client,int,true);
         }
-    })
+    });
 }
 
       }

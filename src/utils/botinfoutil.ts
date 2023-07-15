@@ -13,7 +13,7 @@ import { ActionRowBuilder, ButtonBuilder, ButtonInteraction, ButtonStyle, Comman
        .setColor(`#6bde36`)
        .setAuthor({ name: `${client.user?.username}`,  iconURL: client.user?.avatarURL({ forceStatic: false })!
       })
-       .setDescription(`Cav was made by xYossaf, a bot to log burh`)
+       .setDescription(`${client.user.username}**[**Cav**]** was made by yossaf#0, a bot to log messages that sent across the server in one place`)
 
       await interaction.reply({ embeds: [embed], components: [row],ephemeral: onlyu });
 

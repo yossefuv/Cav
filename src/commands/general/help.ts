@@ -1,9 +1,10 @@
-import { CommandInteraction, SlashCommandBuilder } from 'discord.js';
+import { CommandInteraction, PermissionFlagsBits, SlashCommandBuilder } from 'discord.js';
 import { helpro } from '../../utils/helputil';
 
 module.exports = {
   cooldown: 5,
 	category: "general",
+  defaultMemberPermissions: PermissionFlagsBits.SendMessages,
 	data: new SlashCommandBuilder()
 		.setName('help')
 		.setDescription('Replies with the help menu'),

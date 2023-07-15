@@ -8,11 +8,13 @@ module.exports = {
 		console.log(`Ready! Logged in as ${client.user.tag}`);
 
 		 client.guilds.cache.map(guild => {
-      
-           /* if(client.db.has(guild.id)) {
+            if(!client.db.has(guild.id)) {
              client.db.set(guild.id, {
               messages: {
                   enabled: false,
+                  deletedLog: false,
+                  editedLog: false, 
+                  infiniteLog: false,
                   lifetime:  client.config.defaultMessageLifetime,
                   bufferLimit:  client.config.defaultBufferLimit,
                   wordLogging: false,
@@ -24,11 +26,10 @@ module.exports = {
               channelToLog: undefined,
               loggedChannels: [],
           });
-         }  */
+         }  else {
+            client.db.delete(guild.id, 'messages.buffer');
+         }
         });
-/*         client.db.set("1117933911654289542", true, 'messages.enabled');
-        client.db.set("1117933911654289542", "1126978720742256851", 'channelToLog');
-        client.db.set("1117933911654289542", ["1117933912879022183"], 'loggedChannels'); */
 
 		resetStatus(client);
         setInterval(() => {

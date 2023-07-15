@@ -1,4 +1,4 @@
-import { CommandInteraction, EmbedBuilder, SlashCommandBuilder, version as discordVersion } from 'discord.js';
+import { CommandInteraction, EmbedBuilder, PermissionFlagsBits, SlashCommandBuilder, version as discordVersion } from 'discord.js';
 const moment = require('moment');
 import { version } from '../../cpackage.json'
 require('moment-duration-format');
@@ -6,6 +6,7 @@ require('moment-duration-format');
 module.exports = {
 	cooldown: 5,
 	category: "information",
+      defaultMemberPermissions: PermissionFlagsBits.SendMessages,
 	data: new SlashCommandBuilder()
 		.setName('stats')
 		.setDescription('Provides information about the bot.')

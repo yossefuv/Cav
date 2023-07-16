@@ -1,6 +1,7 @@
 # Welcome to the Cav Repository
 
 [![Cav](https://i.imgur.com/hsHkl39.png)](https://github.com/xYossaf/Cav)
+##
 Cav is a bot that logs all messages sent in the server in a specific channel and allows you to view the most used words in the server with customizable settings.
 
 ## Features:

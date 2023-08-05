@@ -1,7 +1,7 @@
 {
   "name": "cav",
   "version": "v3.3.3",
-  "description": "Cav is bot to log all the messages sent in your server in one place.",
+  "description": "Cav is bot to log all the messages across your server in one place.",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",

@@ -2,10 +2,11 @@
   "name": "cav",
   "version": "v3.3.3",
   "description": "Cav is bot to log all the messages across your server in one place.",
-  "main": "index.js",
+  "main": "dist/index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "tsc",
+    "start": "node dist/index.js",
     "brun": "node -e \"const fs = require('fs'); fs.copyFile('package.json', './src/cpackage.json', (err) => { if (err) throw err; console.log('package.json was copied to cpackage.json'); });\" && tsc && node dist/index.js"
   },
   "repository": {
